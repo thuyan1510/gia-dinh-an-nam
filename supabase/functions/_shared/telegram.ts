@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.3";
+import { pregnancyTelegramText } from "./pregnancyTelegram.ts";
 
 export async function telegram(
   method: string,
@@ -116,6 +117,7 @@ export async function processTelegram(
         continue;
       }
       let reminder;
+      let pregnancyText: string | undefined;
       if (job.source_table === "reminders") {
         const { data, error } = await admin
           .from("reminders")
@@ -146,7 +148,13 @@ export async function processTelegram(
       ) {
         const { data, error } = await admin
           .from(job.source_table)
-          .select(job.source_table === "care_entries" ? "id,deleted_at" : "id")
+          .select(
+            job.source_table === "care_entries"
+              ? job.kind === "pregnancy_status"
+                ? "id,deleted_at,details,telegram_revision"
+                : "id,deleted_at"
+              : "id",
+          )
           .eq("id", job.entity_id)
           .eq("family_id", job.family_id)
           .maybeSingle();
@@ -154,6 +162,20 @@ export async function processTelegram(
         if (!data || (data as { deleted_at?: string }).deleted_at) {
           await finish({ state: "cancelled" });
           continue;
+        }
+        if (job.kind === "pregnancy_status") {
+          const diary = data as unknown as {
+            telegram_revision: number;
+            details: Record<string, unknown>;
+          };
+          if (
+            diary.telegram_revision !== job.revision ||
+            diary.details?.tool !== "pregnancy-today"
+          ) {
+            await finish({ state: "cancelled" });
+            continue;
+          }
+          pregnancyText = pregnancyTelegramText(diary.details);
         }
       }
       // Recheck fencing after reads; cancellation already in-flight at Telegram remains best effort.
@@ -175,7 +197,8 @@ export async function processTelegram(
       const result = await telegram("sendMessage", {
         chat_id: link.chat_id,
         text:
-          "Gia Đình An Nam\n" + notificationText(job.kind, reminder?.due_at),
+          "Gia Đình An Nam\n" +
+          (pregnancyText ?? notificationText(job.kind, reminder?.due_at)),
         ...(canAck
           ? {
               reply_markup: {

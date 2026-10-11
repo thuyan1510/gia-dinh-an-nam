@@ -1,0 +1,545 @@
+{
+  "source": "User-provided response in request(7).txt; headers excluded",
+  "weeks": [
+    {
+      "completedWeek": 0,
+      "sourceWeek": 1,
+      "visualId": "week_1",
+      "articleId": "15_4951"
+    },
+    {
+      "completedWeek": 1,
+      "sourceWeek": 2,
+      "visualId": "week_2",
+      "articleId": "15_4961"
+    },
+    {
+      "completedWeek": 2,
+      "sourceWeek": 3,
+      "visualId": "week_3",
+      "articleId": "15_0031"
+    },
+    {
+      "completedWeek": 3,
+      "sourceWeek": 4,
+      "visualId": "week_4",
+      "articleId": "15_0041"
+    },
+    {
+      "completedWeek": 4,
+      "sourceWeek": 5,
+      "visualId": "week_5",
+      "articleId": "15_0051"
+    },
+    {
+      "completedWeek": 5,
+      "sourceWeek": 6,
+      "visualId": "week_6",
+      "articleId": "15_0071"
+    },
+    {
+      "completedWeek": 6,
+      "sourceWeek": 7,
+      "visualId": "week_7",
+      "articleId": "15_0091"
+    },
+    {
+      "completedWeek": 7,
+      "sourceWeek": 8,
+      "visualId": "week_8",
+      "articleId": "15_0111"
+    },
+    {
+      "completedWeek": 8,
+      "sourceWeek": 9,
+      "visualId": "week_9",
+      "articleId": "15_0131"
+    },
+    {
+      "completedWeek": 9,
+      "sourceWeek": 10,
+      "visualId": "week_10",
+      "articleId": "15_0151"
+    },
+    {
+      "completedWeek": 10,
+      "sourceWeek": 11,
+      "visualId": "week_11",
+      "articleId": "15_0171"
+    },
+    {
+      "completedWeek": 11,
+      "sourceWeek": 12,
+      "visualId": "week_12",
+      "articleId": "15_0191"
+    },
+    {
+      "completedWeek": 12,
+      "sourceWeek": 13,
+      "visualId": "week_13",
+      "articleId": "15_0211"
+    },
+    {
+      "completedWeek": 13,
+      "sourceWeek": 14,
+      "visualId": "week_14",
+      "articleId": "15_0231"
+    },
+    {
+      "completedWeek": 14,
+      "sourceWeek": 15,
+      "visualId": "week_15",
+      "articleId": "15_0251"
+    },
+    {
+      "completedWeek": 15,
+      "sourceWeek": 16,
+      "visualId": "week_16",
+      "articleId": "15_0271"
+    },
+    {
+      "completedWeek": 16,
+      "sourceWeek": 17,
+      "visualId": "week_17",
+      "articleId": "15_0291"
+    },
+    {
+      "completedWeek": 17,
+      "sourceWeek": 18,
+      "visualId": "week_18",
+      "articleId": "15_0311"
+    },
+    {
+      "completedWeek": 18,
+      "sourceWeek": 19,
+      "visualId": "week_19",
+      "articleId": "15_0331"
+    },
+    {
+      "completedWeek": 19,
+      "sourceWeek": 20,
+      "visualId": "week_20",
+      "articleId": "15_0351"
+    },
+    {
+      "completedWeek": 20,
+      "sourceWeek": 21,
+      "visualId": "week_21",
+      "articleId": "15_0371"
+    },
+    {
+      "completedWeek": 21,
+      "sourceWeek": 22,
+      "visualId": "week_22",
+      "articleId": "15_0391"
+    },
+    {
+      "completedWeek": 22,
+      "sourceWeek": 23,
+      "visualId": "week_23",
+      "articleId": "15_0411"
+    },
+    {
+      "completedWeek": 23,
+      "sourceWeek": 24,
+      "visualId": "week_24",
+      "articleId": "15_0431"
+    },
+    {
+      "completedWeek": 24,
+      "sourceWeek": 25,
+      "visualId": "week_25",
+      "articleId": "15_0451"
+    },
+    {
+      "completedWeek": 25,
+      "sourceWeek": 26,
+      "visualId": "week_26",
+      "articleId": "15_0471"
+    },
+    {
+      "completedWeek": 26,
+      "sourceWeek": 27,
+      "visualId": "week_27",
+      "articleId": "15_0491"
+    },
+    {
+      "completedWeek": 27,
+      "sourceWeek": 28,
+      "visualId": "week_28",
+      "articleId": "15_0511"
+    },
+    {
+      "completedWeek": 28,
+      "sourceWeek": 29,
+      "visualId": "week_29",
+      "articleId": "15_0531"
+    },
+    {
+      "completedWeek": 29,
+      "sourceWeek": 30,
+      "visualId": "week_30",
+      "articleId": "15_0551"
+    },
+    {
+      "completedWeek": 30,
+      "sourceWeek": 31,
+      "visualId": "week_31",
+      "articleId": "15_0571"
+    },
+    {
+      "completedWeek": 31,
+      "sourceWeek": 32,
+      "visualId": "week_32",
+      "articleId": "15_0591"
+    },
+    {
+      "completedWeek": 32,
+      "sourceWeek": 33,
+      "visualId": "week_33",
+      "articleId": "15_0611"
+    },
+    {
+      "completedWeek": 33,
+      "sourceWeek": 34,
+      "visualId": "week_34",
+      "articleId": "15_0631"
+    },
+    {
+      "completedWeek": 34,
+      "sourceWeek": 35,
+      "visualId": "week_35",
+      "articleId": "15_0651"
+    },
+    {
+      "completedWeek": 35,
+      "sourceWeek": 36,
+      "visualId": "week_36",
+      "articleId": "15_0671"
+    },
+    {
+      "completedWeek": 36,
+      "sourceWeek": 37,
+      "visualId": "week_37",
+      "articleId": "15_0691"
+    },
+    {
+      "completedWeek": 37,
+      "sourceWeek": 38,
+      "visualId": "week_38",
+      "articleId": "15_0711"
+    },
+    {
+      "completedWeek": 38,
+      "sourceWeek": 39,
+      "visualId": "week_39",
+      "articleId": "15_0731"
+    },
+    {
+      "completedWeek": 39,
+      "sourceWeek": 40,
+      "visualId": "week_40",
+      "articleId": "15_0751"
+    },
+    {
+      "completedWeek": 40,
+      "sourceWeek": 41,
+      "visualId": "week_40",
+      "articleId": "15_6031"
+    },
+    {
+      "completedWeek": 41,
+      "sourceWeek": 42,
+      "visualId": "week_40",
+      "articleId": "15_6051"
+    },
+    {
+      "completedWeek": 42,
+      "sourceWeek": 43,
+      "visualId": "week_40",
+      "articleId": "15_6071"
+    }
+  ],
+  "visuals": {
+    "week_1": {
+      "file": "week_1.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/5ihW44ZI4vU9IZqRAsQ7qF.jpg",
+      "sha256": "fc49996c8327dadb236cd0fbecc1449743f8acc9793ffb06c9a5423f966c1adc"
+    },
+    "week_2": {
+      "file": "week_2.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4VUeQjU4zlOyx3tZ3u65GN.jpg",
+      "sha256": "5172e0a05186f83478d171186560f905c4b0577fcaa61e9b82cb81edd1e967b7"
+    },
+    "week_3": {
+      "file": "week_3.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/3xp0C7zONnmIsvdqlBTy8e.jpg",
+      "sha256": "c7827844c35c86a4de455f9a7d64a5868c5f38226b3c3fcba50e4b80b03761f0"
+    },
+    "week_4": {
+      "file": "week_4.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/5gFVJgMJc7kLdH7Zaylrgc.jpg",
+      "sha256": "85fcffd0f1acd4cb8fe6abcff5a1a13feb0e73c7729864f9d6c88c1756728677"
+    },
+    "week_5": {
+      "file": "week_5.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/3EJNuBDDdagtBhlUAuwvoZ.jpg",
+      "sha256": "6ed26da0f3711bc77377dc78023b7dae6a67e559f827ad6c46c4c2432569eee3"
+    },
+    "week_6": {
+      "file": "week_6.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4WnLuK3dXBligb88gBVOML.jpg",
+      "sha256": "c5a30c9864dfe21591f493d109521b850fcd3f4878313e8cc0923f4a2d19c183"
+    },
+    "week_7": {
+      "file": "week_7.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/67EUGGh8mTNM295x7BN7fs.jpg",
+      "sha256": "9c373cb57eb9e90acaab966380a039b26cf6351b2e3d54e6b19a185dddafe15f"
+    },
+    "week_8": {
+      "file": "week_8.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/6wSsSXURZtc1MrpX22cIgC.jpg",
+      "sha256": "efb6d7c446d9626850e60d518bd2b58ae63a1c8c825d1dbd1e1526fc37088f12"
+    },
+    "week_9": {
+      "file": "week_9.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/1kgmauuwH4fx4EfpdoozMU.jpg",
+      "sha256": "18a1cdcd77d27f21e487decc201c37f8aa98bc5db684d659599ce582462a7ab9"
+    },
+    "week_10": {
+      "file": "week_10.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/2vK17OwDi38eXTaZwFLIqb.jpg",
+      "sha256": "acce7ed4fd3559f45206aa16a375207455bd17a262c0d31128bf7d034369018e"
+    },
+    "week_11": {
+      "file": "week_11.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/6VampmZCwRP8FPkKPA72TV.jpg",
+      "sha256": "4290ddc0f2457248db9693adca479c63991787eb0c48c71a5516a575c717d0f9"
+    },
+    "week_12": {
+      "file": "week_12.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4VKu7R0a5rRs4eH0zNnPUJ.jpg",
+      "sha256": "6162f44110c4a11dbf7236f1c035b59ff169432b54593b5cbe737051ac621c63"
+    },
+    "week_13": {
+      "file": "week_13.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/7cPJ6BEtfBjLtHc2QeRf4F.jpg",
+      "sha256": "ceb74e54c0f679146268f0db7707ea80fcfb8f5ddb8f34991b90ef97402229d6"
+    },
+    "week_14": {
+      "file": "week_14.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4RK1Kpxterp2UCJAJT0SQB.jpg",
+      "sha256": "b510c910e1506b6c519f0af35a44c8aba7f559bab60747c3681d94608d209968"
+    },
+    "week_15": {
+      "file": "week_15.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/6sH3sfu5yPJwLdA7LggYpT.jpg",
+      "sha256": "465728cbd3cff16418a6735b02f2f61467113781e374b95e58afbe5539cb1ced"
+    },
+    "week_16": {
+      "file": "week_16.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/NMPoP2O1awx25Vd2DxmUm.jpg",
+      "sha256": "aa16b1539f742477842cc6d4b7ebbe1e06e0af170d9b9dd6d25ff9f0a3f9df93"
+    },
+    "week_17": {
+      "file": "week_17.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/1PDmnd2I69OmkjEKYhDjqD.jpg",
+      "sha256": "50ee812a5c293caaf29ea51a90d154283e966677adee569ad3ff1a409f25b5ce"
+    },
+    "week_18": {
+      "file": "week_18.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/3AxvXaYT5abpzznwpqLWGx.jpg",
+      "sha256": "61a4bac72ec548d1c3bf3b836d58c9b3b0f6650430f2a8c65292b1151346522d"
+    },
+    "week_19": {
+      "file": "week_19.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/5Nm2GlXbPA8qcW9bYtSSGb.jpg",
+      "sha256": "c7ae7bd541821d8a63431cea753e7cd4537a9a8cb815ca9fc475a10b817a9b88"
+    },
+    "week_20": {
+      "file": "week_20.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/1JBWvAJZVXxyWe6iV5cGyu.jpg",
+      "sha256": "0c87b8544ba52a57b43030d97839c69390cb31377951de83295f2b3a265fcded"
+    },
+    "week_21": {
+      "file": "week_21.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/hJIbs3lmjHXSP3ZGvO8yo.jpg",
+      "sha256": "b354e0d524fbe57943889b4a32088e28ff19a41cb52ecbc993538dad42bfda9d"
+    },
+    "week_22": {
+      "file": "week_22.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/3GVTgtCHjcRUuneAJgZLtd.jpg",
+      "sha256": "9ee70177ca6fcf493813469ab8cd270571f0e0188db985212beab4fe4389861f"
+    },
+    "week_23": {
+      "file": "week_23.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/13wyH8VBzLlib1s3IRHobx.jpg",
+      "sha256": "f72bed33c3bcfb82f9c51f5fcc85b8585bf720a64628c0633faf05a6a3277fe6"
+    },
+    "week_24": {
+      "file": "week_24.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/59vXoRVxRmLMcxgWVTerLx.jpg",
+      "sha256": "9977a0a387a9e351e292926580cbd1840be92a2fddf1d26b0a9cd550f73b79a5"
+    },
+    "week_25": {
+      "file": "week_25.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/2dfEWtYfVcjAvi1chcbOcb.jpg",
+      "sha256": "a9b0cb3a7b1a9f836234877037d67678739e1a2115dc25a49412ac535ec06060"
+    },
+    "week_26": {
+      "file": "week_26.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4oV4awzrn6XbNc8f50BVIy.jpg",
+      "sha256": "87cc969da5f71f9dac246ebc6550f57a69d02775c2adb693a340229c20624336"
+    },
+    "week_27": {
+      "file": "week_27.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/uRwPfvNcjJsCXic1nSTkz.jpg",
+      "sha256": "5906d85d13052eb140add8afed2673a297d492729fd9824ea08ce5c4044b721d"
+    },
+    "week_28": {
+      "file": "week_28.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/28wgkkxVRA4L6MB0MZ85vP.jpg",
+      "sha256": "70a736d4ce6be5fa192ca89abe6fa8f612df706d644505aa918f27ab8fc0f719"
+    },
+    "week_29": {
+      "file": "week_29.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4dhaRKnnoWZSrjMNbKfcDn.jpg",
+      "sha256": "e3e6ab201c66c00dcbeafaa273d8a26b716b4671030e9c29c7f056ad52b50767"
+    },
+    "week_30": {
+      "file": "week_30.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/1odtDbAdt9F8708B9BGyRF.jpg",
+      "sha256": "e89f707d9ce19bfc69f519798ec6a2c04604b12d419f80572d2587533c5da8ca"
+    },
+    "week_31": {
+      "file": "week_31.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/7prtq7EtvfZ6IdGLxgVcxu.jpg",
+      "sha256": "081c2434caaea4a60fc773731cb43105b4d78d115f6ce5dd08a3dea9ee6bc12d"
+    },
+    "week_32": {
+      "file": "week_32.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/67eYH9z2k0eOrrXgMpTlsT.jpg",
+      "sha256": "cf57c887dfae1a035176ca1e1043061b9e43b397d09dfd2b6069afe01f3e1ebc"
+    },
+    "week_33": {
+      "file": "week_33.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/4ALgbcwJeJS0VTRVG3YRbl.jpg",
+      "sha256": "3dbb10621075d7b9c828cde928ece5dcac641697ac5c5f1ac6318d087ff1cc63"
+    },
+    "week_34": {
+      "file": "week_34.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/2dqvaitI5ocpWdjMrXUV3O.jpg",
+      "sha256": "b4c298dd27266b8e73b085b819e320826b0fb71aa7e76ce3196906b3c1d1015d"
+    },
+    "week_35": {
+      "file": "week_35.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/5sCv8JFQStjGkKEAMCAMOW.jpg",
+      "sha256": "43f648a20315857336669831b8566db716ed62d46ba6ce080a747f9c4838e79f"
+    },
+    "week_36": {
+      "file": "week_36.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/7kOpq6jq5k0sb3BGKc0WC9.jpg",
+      "sha256": "41b50a32433e916adfd0a10ed840e24c7859bc9b0acdd98fd46c8521d1deb8d9"
+    },
+    "week_37": {
+      "file": "week_37.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/1E03f5qxi0ENzao2F170rz.jpg",
+      "sha256": "a8e8f5b88e1c6f7c7e76d455c655bf29c167505979561462ab5e9fb7dcce208c"
+    },
+    "week_38": {
+      "file": "week_38.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/6ZFRofmyUckejbCstbrEDG.jpg",
+      "sha256": "51e8b0919ae902cb7702769024320a765b57b54705dfd34595b5d59cd6d37635"
+    },
+    "week_39": {
+      "file": "week_39.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/3Hb8Pwb9YBR8oFlnqrONqZ.jpg",
+      "sha256": "8cc8e28b992443107a85ecfaf4b49daa5f4b91161f53435f4a0676b01087853c"
+    },
+    "week_40": {
+      "file": "week_40.jpg",
+      "width": 1242,
+      "height": 1242,
+      "source": "https://content.owhealth.com/release/media/en/7BCCdVoXtsxWAc9DDTpPPB.jpg",
+      "sha256": "e88653e782d70640fd055e1fc09fc52d4fcba4469552504ab2025bc9705abb4c"
+    }
+  }
+}

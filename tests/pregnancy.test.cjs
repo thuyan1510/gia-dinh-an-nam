@@ -18,6 +18,7 @@ const {
   pregnancyAge,
   pregnancyDayNumber,
   articleLinkTarget,
+  pregnancyWeekDays,
 } = require("../src/lib/pregnancy.ts");
 const {
   pregnancyArticles,
@@ -136,20 +137,25 @@ test("gestational age respects leap dates, local day and completed rather than o
   assert.equal(pregnancyAge("", "2026-10-10"), null);
   assert.equal(pregnancyAge("2028-12-01", "2026-10-10"), null);
 });
-test("pregnancy reminder plan has no past events, is opt-in, bounded and cancels born profiles", () => {
+test("pregnancy reminders default to 07:00/17:30, respect opt-out and cancel born profiles", () => {
   const now = new Date("2026-10-10T10:00:00");
   assert.deepEqual(
     planPregnancyReminders(
-      [{ child, settings: defaultPregnancyReminders }],
+      [{ child, settings: { ...defaultPregnancyReminders, enabled: false } }],
       now,
     ),
     [],
   );
-  const settings = { ...defaultPregnancyReminders, enabled: true, diary: true };
+  const settings = {
+    ...defaultPregnancyReminders,
+    enabled: true,
+    diary: true,
+    dailyInfo: true,
+  };
   const plan = planPregnancyReminders([{ child, settings }], now);
   assert.equal(plan.length, 12);
-  assert.equal(plan[0].kind, "diary");
-  assert.equal(plan[0].at.getHours(), 20);
+  assert.equal(plan[0].kind, "diary-evening");
+  assert.equal(plan[0].at.getHours(), 17);
   assert.equal(plan[0].at.getMinutes(), 30);
   assert.equal(new Set(plan.map((n) => n.identifier)).size, plan.length);
   assert.ok(plan.every((n) => n.at > now));
@@ -177,13 +183,54 @@ test("pregnancy reminder plan has no past events, is opt-in, bounded and cancels
     now,
   );
   assert.ok(
-    !recorded.some((n) => n.kind === "diary" && n.day === "2026-10-10"),
+    recorded.some((n) => n.kind === "diary-evening" && n.day === "2026-10-10"),
   );
+  const defaults = planPregnancyReminders(
+    [{ child, settings: defaultPregnancyReminders }],
+    new Date("2026-10-10T06:00:00"),
+  );
+  assert.deepEqual(
+    defaults.slice(0, 2).map((n) => [n.at.getHours(), n.at.getMinutes()]),
+    [
+      [7, 0],
+      [17, 30],
+    ],
+  );
+  assert.ok(defaults.every((n) => n.kind !== "info"));
+  assert.equal(defaults.length, 2);
+  assert.ok(defaults.every((n) => n.repeatsDaily));
+  const nextDay = planPregnancyReminders(
+    [{ child, settings: defaultPregnancyReminders }],
+    new Date("2026-10-11T13:00:00"),
+  );
+  assert.deepEqual(
+    defaults.map((n) => n.identifier).sort(),
+    nextDay.map((n) => n.identifier).sort(),
+  );
+  for (const n of nextDay)
+    assert.equal(
+      n.signature,
+      defaults.find((d) => d.identifier === n.identifier).signature,
+    );
+  const old = parsePregnancyReminders({
+    enabled: false,
+    dailyInfo: true,
+    diary: true,
+    diaryTime: "20:15",
+  });
+  assert.equal(old.enabled, false);
+  assert.equal(old.diaryTime, "20:15");
+  assert.equal(old.diaryMorningTime, "07:00");
 });
 test("multi-baby notifications share a bounded budget and carry child-specific destinations", () => {
   const profiles = ["c1", "c2"].map((id) => ({
     child: { ...child, id },
-    settings: { ...defaultPregnancyReminders, enabled: true },
+    settings: {
+      ...defaultPregnancyReminders,
+      enabled: true,
+      dailyInfo: true,
+      diary: false,
+    },
   }));
   const plan = planPregnancyReminders(
     profiles,
@@ -200,6 +247,61 @@ test("multi-baby notifications share a bounded budget and carry child-specific d
     "09:00",
   );
   assert.equal(parsePregnancyReminders({ enabled: "true" }).enabled, false);
+});
+test("calendar strip is Monday–Sunday and the 40 hero illustrations follow verified source mappings", () => {
+  assert.deepEqual(pregnancyWeekDays("2026-10-11"), [
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-10",
+    "2026-10-11",
+  ]);
+  assert.deepEqual(pregnancyWeekDays("2027-01-01"), [
+    "2026-12-28",
+    "2026-12-29",
+    "2026-12-30",
+    "2026-12-31",
+    "2027-01-01",
+    "2027-01-02",
+    "2027-01-03",
+  ]);
+  assert.deepEqual(pregnancyWeekDays("2026-02-29"), []);
+  const { weeks, visuals } = require("../src/data/pregnancy/visuals.json");
+  assert.equal(weeks.length, 43);
+  assert.equal(Object.keys(visuals).length, 40);
+  for (const w of weeks) {
+    assert.equal(weeklyArticle("growth", w.completedWeek).id, w.articleId);
+    assert.equal(w.sourceWeek, w.completedWeek + 1);
+    assert.ok(visuals[w.visualId]);
+  }
+  assert.equal(weeks[20].visualId, "week_21");
+  assert.equal(weeks[42].visualId, "week_40");
+  const sources = fs.readFileSync(
+    path.join(__dirname, "../src/data/pregnancy/visualSources.ts"),
+    "utf8",
+  );
+  for (const v of Object.values(visuals)) {
+    assert.equal(
+      crypto
+        .createHash("sha256")
+        .update(
+          fs.readFileSync(
+            path.join(__dirname, "../assets/pregnancy-visuals", v.file),
+          ),
+        )
+        .digest("hex"),
+      v.sha256,
+    );
+    assert.ok(sources.includes(v.file));
+  }
+  assert.equal(
+    require("../src/data/pregnancyDiary.ts").pregnancyDiaryGroups.some(
+      (g) => g.id === "sex",
+    ),
+    false,
+  );
 });
 test("diary selections safely parse old data, deduplicate, keep normal-state choices exclusive", () => {
   assert.deepEqual(parsePregnancySelections('"bad"'), {});

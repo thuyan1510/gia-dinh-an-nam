@@ -102,7 +102,7 @@ function Settings({
         !value.enabled
           ? "Đã tắt nhắc cho hồ sơ này trên máy này."
           : result.count
-            ? `Đã lập ${result.count} thông báo thai kỳ cho các hồ sơ đang bật, gần nhất đến ${result.through?.split("-").reverse().join("/")}. App sẽ bổ sung lịch khi mở lại.`
+            ? `Đã đặt ${result.dailyCount} lịch nhắc trạng thái lặp hằng ngày cho các hồ sơ đang bật.${result.through ? ` Bài đọc được đặt thêm đến ${result.through.split("-").reverse().join("/")}; mở app để bổ sung lịch bài đọc.` : ""}`
             : "Đã lưu tùy chọn nhưng chưa có thông báo được đặt: có thể ngoài tuần 0–42 hoặc hàng đợi đang đầy. Hãy kiểm tra ngày dự sinh và các lời nhắc khác.",
       );
     } catch (e) {
@@ -164,11 +164,18 @@ function Settings({
       <View style={p.card}>
         {toggle("diary", "Nhắc ghi nhật ký")}
         <Text style={p.muted}>
-          Mỗi tối một lần. Nếu ngày đó đã có nhật ký trên máy, app bỏ lời nhắc
-          khi bổ sung lịch.
+          Nhắc điền trạng thái vào buổi sáng và cập nhật lại buổi chiều, kể cả
+          khi đã ghi nhật ký sáng. Mặc định 07:00 và 17:30 mỗi ngày.
         </Text>
         <TimePicker
-          label="Giờ nhắc ghi nhật ký"
+          label="Giờ nhắc buổi sáng"
+          value={value.diaryMorningTime}
+          onChange={(time) =>
+            setValue((v) => ({ ...v, diaryMorningTime: time }))
+          }
+        />
+        <TimePicker
+          label="Giờ nhắc buổi chiều"
           value={value.diaryTime}
           onChange={(time) => setValue((v) => ({ ...v, diaryTime: time }))}
         />
@@ -176,15 +183,16 @@ function Settings({
       <View style={p.card}>
         <Text style={p.heading}>Cách lịch hoạt động</Text>
         <Text style={p.muted}>
-          09:00 và 20:30 là giờ gợi ý của An Nam, không phải giờ tìm thấy trong
-          IPA Flo. Giờ theo múi giờ điện thoại tại lúc đặt lịch; mở lại app sau
-          khi đổi múi giờ.
+          07:00 và 17:30 là giờ nhắc trạng thái mặc định của An Nam theo yêu cầu
+          gia đình, không phải giờ tìm thấy trong IPA Flo. Giờ theo múi giờ điện
+          thoại tại lúc đặt lịch; mở lại app sau khi đổi múi giờ.
         </Text>
         <Text style={p.muted}>
-          App đặt tối đa 12 thông báo thai kỳ sắp tới, xét trong 14 ngày, để
-          chừa chỗ cho lịch gia đình. Mở app thường xuyên để bổ sung. Đổi ngày
-          dự sinh, báo bé đã sinh hoặc tắt nhắc sẽ làm app thay/hủy lịch cũ khi
-          nhận được dữ liệu đó.
+          Nhắc trạng thái dùng hai lịch lặp hằng ngày của iOS, không hết sau vài
+          ngày đóng app. Bài đọc theo tuổi thai dùng lịch hữu hạn, xét trong 14
+          ngày. Tổng tối đa 12 mục để chừa chỗ cho lịch gia đình. Đổi dự sinh,
+          báo bé đã sinh hoặc tắt nhắc sẽ thay/hủy lịch khi máy nhận được dữ
+          liệu đó. Hãy mở app để đồng bộ những thay đổi từ người còn lại.
         </Text>
         <Text style={p.muted}>
           Nhắc đã đặt có thể hiện khi app đóng; Focus, chế độ im lặng và cài đặt
@@ -197,6 +205,21 @@ function Settings({
           {status}
         </Text>
       )}
+      <Pressable
+        style={p.pill}
+        disabled={!ready || busy}
+        onPress={() =>
+          setValue({
+            ...value,
+            enabled: true,
+            diary: true,
+            diaryMorningTime: "07:00",
+            diaryTime: "17:30",
+          })
+        }
+      >
+        <Text style={p.pillText}>Dùng giờ mặc định 07:00 và 17:30</Text>
+      </Pressable>
       <Pressable
         style={[
           p.action,

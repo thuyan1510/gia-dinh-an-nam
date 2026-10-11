@@ -25,6 +25,16 @@ export function pregnancyAge(due: string | null | undefined, day: string) {
 export function formatPregnancyAge(age: { weeks: number; days: number }) {
   return `${age.weeks} tuần, ${age.days} ngày`;
 }
+/** Seven consecutive calendar days, always Monday through Sunday (including year boundaries). */
+export function pregnancyWeekDays(day: string): string[] {
+  const number = pregnancyDayNumber(day);
+  if (number === null) return [];
+  const weekday = new Date(number * 86400000).getUTCDay();
+  const monday = number - ((weekday + 6) % 7);
+  return Array.from({ length: 7 }, (_, i) =>
+    new Date((monday + i) * 86400000).toISOString().slice(0, 10),
+  );
+}
 export function plainArticleText(text: string) {
   return text
     .replace(/!?\[([^\]]+)\]\([^)]+\)/g, "$1")

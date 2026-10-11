@@ -86,19 +86,6 @@ export const pregnancyDiaryGroups = [
     options: ["Sưng tay chân", "Sưng mặt", "Nghẹt mũi"],
   },
   {
-    id: "sex",
-    title: "Tình dục và nhu cầu",
-    icon: "heart-outline",
-    options: [
-      "Không quan hệ",
-      "Có bảo vệ",
-      "Không bảo vệ",
-      "Tự kích thích",
-      "Nhu cầu cao",
-      "Nhu cầu thấp",
-    ],
-  },
-  {
     id: "activity",
     title: "Hoạt động thể chất",
     icon: "walk-outline",

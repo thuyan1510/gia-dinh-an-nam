@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { Alert, Platform } from "react-native";
 import { pregnancyArticles } from "../src/data/pregnancy";
 import { pregnancyDayNumber } from "../src/lib/pregnancy";
+import { localDay } from "../src/components/DayPicker";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -53,10 +54,12 @@ function NotificationNavigation() {
                 });
               } else {
                 const day =
-                  typeof data.day === "string" &&
-                  pregnancyDayNumber(data.day) !== null
-                    ? data.day
-                    : undefined;
+                  data.repeatsDaily === true
+                    ? localDay(new Date())
+                    : typeof data.day === "string" &&
+                        pregnancyDayNumber(data.day) !== null
+                      ? data.day
+                      : undefined;
                 router.push({
                   pathname: "/pregnancy",
                   params: day ? { day } : {},

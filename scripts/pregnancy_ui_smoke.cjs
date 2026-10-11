@@ -60,7 +60,34 @@ async function main() {
     );
     await page.getByTestId("tool-pregnancy-today").click();
     await page.getByText("Thông tin hằng ngày", { exact: true }).waitFor();
+    const calendar = page.getByTestId("pregnancy-week-strip");
+    assert.equal(await calendar.getByRole("button").count(), 7);
+    await page.getByTestId("pregnancy-visual-week_21").waitFor();
+    assert.equal(await page.getByText("Tình dục", { exact: true }).count(), 0);
+    const bg = page.getByTestId("pregnancy-scroll-background");
+    const beforeColor = await bg.evaluate(
+      (el) => getComputedStyle(el).backgroundColor,
+    );
+    await page
+      .getByText("Thông tin hằng ngày", { exact: true })
+      .scrollIntoViewIfNeeded();
+    await page.waitForTimeout(150);
+    assert.notEqual(
+      await bg.evaluate((el) => getComputedStyle(el).backgroundColor),
+      beforeColor,
+      "Background responds to scroll",
+    );
+    await calendar.scrollIntoViewIfNeeded();
+    await page.getByLabel("Về hôm nay", { exact: true }).click();
+    await calendar.getByRole("button").first().click();
+    assert.equal(
+      await calendar.getByRole("button").first().getAttribute("aria-selected"),
+      "true",
+    );
+    await page.getByLabel("Về hôm nay", { exact: true }).click();
+    await page.getByTestId("pregnancy-profile").scrollIntoViewIfNeeded();
     await page.screenshot({ path: `${output}/today-390.png` });
+    await page.getByLabel("Chọn tuần thai", { exact: true }).click();
     await page.getByLabel("Xem đủ 22 tuần", { exact: true }).click();
     await page
       .getByText("Điều gì đang diễn ra ở tuần 22?", { exact: true })
@@ -143,6 +170,8 @@ async function main() {
     );
     await go("/pregnancy/notifications");
     await page.getByText("Một lời nhắc dành cho mẹ", { exact: true }).waitFor();
+    await page.getByText("07:00", { exact: false }).first().waitFor();
+    await page.getByText("17:30", { exact: false }).first().waitFor();
     await page.screenshot({ path: `${output}/reminders-414.png` });
     assert.deepEqual(errors, []);
     assert.deepEqual(forbidden, []);

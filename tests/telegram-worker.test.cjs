@@ -53,6 +53,26 @@ function fixture() {
         details: "SECRET MEDICINE",
       },
     ],
+    care_entries: [
+      {
+        id: "care1",
+        family_id: "family",
+        telegram_revision: 2,
+        deleted_at: null,
+        details: {
+          tool: "pregnancy-today",
+          day: "2026-10-11",
+          weight: "62.5",
+          selections: JSON.stringify({
+            symptoms: ["Mệt mỏi"],
+            sex: ["SECRET SEX"],
+            mood: ["SECRET MOOD"],
+          }),
+          medicine: "SECRET MEDICINE",
+          note: "SECRET NOTE",
+        },
+      },
+    ],
   };
   const admin = {
     rpc: async () => ({
@@ -126,6 +146,34 @@ test("Telegram sends generic text only, correctly scoped callback; accepted is n
   assert.equal(rows.telegram_jobs[0].state, "accepted");
   assert.equal(rows.reminders[0].acknowledged_at, null);
   assert.equal((await processTelegram(admin)).processed, 0);
+});
+test("pregnancy sends only weight/symptoms; stale revision and deleted records are cancelled", async () => {
+  for (const variant of ["current", "stale", "deleted"]) {
+    const { admin, rows } = fixture();
+    Object.assign(rows.telegram_jobs[0], {
+      source_table: "care_entries",
+      entity_id: "care1",
+      kind: "pregnancy_status",
+      revision: variant === "stale" ? 1 : 2,
+    });
+    if (variant === "deleted") rows.care_entries[0].deleted_at = "today";
+    let payload;
+    global.fetch = async (_url, opts) => {
+      payload = JSON.parse(opts.body);
+      return { json: async () => ({ ok: true, result: { message_id: 55 } }) };
+    };
+    await processTelegram(admin);
+    if (variant === "current") {
+      assert.match(payload.text, /62,5 kg/);
+      assert.match(payload.text, /Mệt mỏi/);
+      assert.match(payload.text, /11\/10\/2026/);
+      assert.doesNotMatch(payload.text, /SECRET/);
+      assert.equal(rows.telegram_jobs[0].state, "accepted");
+    } else {
+      assert.equal(payload, undefined);
+      assert.equal(rows.telegram_jobs[0].state, "cancelled");
+    }
+  }
 });
 test("Unlinked, former member, old revision or completed reminder never sends", async () => {
   for (const mutate of [

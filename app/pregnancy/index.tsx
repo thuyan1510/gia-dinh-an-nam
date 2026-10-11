@@ -1,5 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSQLiteContext } from "expo-sqlite";
+import { activatePregnancyReminders } from "../../src/services/pregnancyNotifications";
 import {
   router,
   Stack,
@@ -8,6 +10,7 @@ import {
 } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Image,
   Pressable,
   ScrollView,
@@ -16,10 +19,12 @@ import {
   View,
 } from "react-native";
 import { Screen } from "../../src/components/ui";
-import { DayPicker, localDay } from "../../src/components/DayPicker";
+import { localDay } from "../../src/components/DayPicker";
+import { PregnancyWeekStrip } from "../../src/components/PregnancyWeekStrip";
+import visualData from "../../src/data/pregnancy/visuals.json";
+import { pregnancyVisualSources } from "../../src/data/pregnancy/visualSources";
 import {
   PregnancyArticleRow,
-  PregnancyImage,
   openPregnancyArticle,
   p,
   pregnancyColors,
@@ -45,11 +50,29 @@ export default function PregnancyToday() {
 }
 function PregnancyDashboard() {
   const { child } = useApp();
+  const db = useSQLiteContext();
+  const [reminderError, setReminderError] = useState("");
+  useEffect(() => {
+    if (child?.id && child.due_date && !child.birthday) {
+      void activatePregnancyReminders(db, child.id).catch(() =>
+        setReminderError(
+          "Chưa đặt được lời nhắc. Chạm chuông để kiểm tra quyền thông báo.",
+        ),
+      );
+    }
+  }, [db, child?.id, child?.due_date, child?.birthday]);
   const params = useLocalSearchParams<{ day?: string }>();
   const [day, setDay] = useState(localDay(new Date()));
   const [today, setToday] = useState(localDay(new Date()));
   const [preview, setPreview] = useState<number | null>(null);
+  const [showWeeks, setShowWeeks] = useState(false);
   const weeksRef = useRef<ScrollView>(null);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const backgroundColor = scrollY.interpolate({
+    inputRange: [0, 420],
+    outputRange: ["#F1C6AA", "#FFFBF9"],
+    extrapolate: "clamp",
+  });
   const { entries } = useCareHistory();
   useEffect(() => {
     if (params.day && pregnancyDayNumber(params.day) !== null) {
@@ -73,6 +96,9 @@ function PregnancyDashboard() {
   const age = pregnancyAge(child?.due_date, day);
   const week = preview ?? age?.weeks ?? 0;
   const growth = weeklyArticle("growth", week);
+  const visualId = visualData.weeks.find(
+    (w) => w.completedWeek === week,
+  )?.visualId;
   const body = weeklyArticle("body", week);
   const inside = pregnancyArticles.filter((a) => a.section === "inside");
   const insight = inside[week % inside.length]!;
@@ -121,307 +147,379 @@ function PregnancyDashboard() {
       </Screen>
     );
   return (
-    <Screen
-      safeAreaStyle={p.root}
-      contentStyle={{ padding: 0, gap: 0, paddingBottom: 28 }}
-    >
-      <Stack.Screen
-        options={{
-          title: "Trạng thái hôm nay",
-          headerStyle: { backgroundColor: "#FFF8F2" },
-          headerBackground: () => (
-            <View style={{ flex: 1, backgroundColor: "#FFF8F2" }} />
-          ),
-          headerTintColor: pregnancyColors.ink,
-          headerTitleStyle: { fontSize: 18, fontWeight: "600" },
-        }}
+    <View style={{ flex: 1 }}>
+      <Animated.View
+        pointerEvents="none"
+        testID="pregnancy-scroll-background"
+        style={[StyleSheet.absoluteFill, { backgroundColor }]}
       />
-      <LinearGradient colors={["#FFF3E5", "#FFDCC7", "#FFF4EF"]} style={s.hero}>
-        <View style={s.topline}>
-          <View style={{ flex: 1 }}>
-            <Text style={s.eyebrow}>HÀNH TRÌNH CỦA GIA ĐÌNH</Text>
-            <Text style={p.heading}>{child.nickname || child.name}</Text>
+      <Screen
+        safeAreaStyle={{ flex: 1, backgroundColor: "transparent" }}
+        contentStyle={{ padding: 0, gap: 0, paddingBottom: 28 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false },
+        )}
+      >
+        <Stack.Screen
+          options={{
+            title: "Trạng thái hôm nay",
+            headerStyle: { backgroundColor: "#FFF8F2" },
+            headerBackground: () => (
+              <Animated.View style={{ flex: 1, backgroundColor }} />
+            ),
+            headerTintColor: pregnancyColors.ink,
+            headerTitleStyle: { fontSize: 18, fontWeight: "600" },
+          }}
+        />
+        <View style={s.hero}>
+          <View style={s.topline}>
+            <View style={{ flex: 1 }}>
+              <Text testID="pregnancy-profile" style={p.heading}>
+                {child.nickname || child.name}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Nhắc thai kỳ cục bộ"
+              onPress={() => router.push("/pregnancy/notifications")}
+              style={s.bell}
+            >
+              <Ionicons
+                name="notifications-outline"
+                size={24}
+                color="#8D534C"
+              />
+            </Pressable>
+          </View>
+          {!!reminderError && <Text style={p.muted}>{reminderError}</Text>}
+          <PregnancyWeekStrip
+            day={day}
+            today={today}
+            onChange={(value) => {
+              setDay(value);
+              setPreview(null);
+            }}
+          />
+          <View style={s.age}>
+            <Text style={s.ageTitle}>
+              {age ? formatPregnancyAge(age) : "Ngoài khoảng dữ liệu 0–42 tuần"}
+            </Text>
+            <Text style={s.ageSubtitle}>
+              {day === today
+                ? "Tuổi thai hôm nay"
+                : "Tuổi thai tại ngày đã chọn"}
+              {age
+                ? age.daysUntilDue >= 0
+                  ? ` · Còn ${age.daysUntilDue} ngày đến ngày dự sinh`
+                  : ` · Sau ngày dự sinh ${-age.daysUntilDue} ngày`
+                : ""}
+            </Text>
           </View>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Nhắc thai kỳ cục bộ"
-            onPress={() => router.push("/pregnancy/notifications")}
-            style={s.bell}
+            accessibilityLabel={`Xem sự phát triển đủ ${week} tuần`}
+            onPress={() => growth && openPregnancyArticle(growth.id)}
+            style={s.heroImage}
           >
-            <Ionicons name="notifications-outline" size={24} color="#8D534C" />
-          </Pressable>
-        </View>
-        <DayPicker
-          value={day}
-          onChange={(value) => {
-            setDay(value);
-            setPreview(null);
-          }}
-        />
-        <View style={s.age}>
-          <Text style={s.ageTitle}>
-            {age ? formatPregnancyAge(age) : "Ngoài khoảng dữ liệu 0–42 tuần"}
-          </Text>
-          <Text style={s.ageSubtitle}>
-            {day === today ? "Tuổi thai hôm nay" : "Tuổi thai tại ngày đã chọn"}
-            {age
-              ? age.daysUntilDue >= 0
-                ? ` · Còn ${age.daysUntilDue} ngày đến ngày dự sinh`
-                : ` · Sau ngày dự sinh ${-age.daysUntilDue} ngày`
-              : ""}
-          </Text>
-        </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={`Xem sự phát triển đủ ${week} tuần`}
-          onPress={() => growth && openPregnancyArticle(growth.id)}
-          style={s.heroImage}
-        >
-          <PregnancyImage
-            imageKey={growth?.images[0]}
-            label={`Minh họa đủ ${week} tuần`}
-            height={225}
-            zoom={false}
-          />
-        </Pressable>
-        <Text style={s.caption}>
-          Đang xem: đủ {week} tuần · Hình minh họa, không phải siêu âm
-        </Text>
-        <ScrollView
-          ref={weeksRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={s.weeks}
-          onContentSizeChange={() =>
-            weeksRef.current?.scrollTo({
-              x: Math.max(0, week * 75 - 120),
-              animated: false,
-            })
-          }
-        >
-          {Array.from({ length: 43 }, (_, i) => (
-            <Pressable
-              key={i}
-              accessibilityLabel={`Xem đủ ${i} tuần`}
-              accessibilityState={{ selected: week === i }}
-              aria-selected={week === i}
-              onPress={() => setPreview(i)}
-              style={[s.week, week === i && { backgroundColor: "#fff" }]}
-            >
-              <Text
+            {visualId && (
+              <Animated.Image
+                testID={`pregnancy-visual-${visualId}`}
+                source={pregnancyVisualSources[visualId]}
+                accessibilityLabel={`Minh họa bé ở ${week} tuần`}
+                resizeMode="contain"
                 style={[
-                  s.weekText,
-                  week === i && { color: "#A35B44", fontWeight: "700" },
+                  StyleSheet.absoluteFill,
+                  {
+                    width: "100%",
+                    height: "100%",
+                    transform: [
+                      {
+                        translateY: scrollY.interpolate({
+                          inputRange: [0, 400],
+                          outputRange: [0, 24],
+                          extrapolate: "clamp",
+                        }),
+                      },
+                    ],
+                  },
                 ]}
+              />
+            )}
+            <LinearGradient
+              pointerEvents="none"
+              colors={["#F1C6AA", "#F1C6AA00"]}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 36,
+              }}
+            />
+            <LinearGradient
+              pointerEvents="none"
+              colors={["#F1C6AA00", "#F1C6AA"]}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 36,
+              }}
+            />
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Chọn tuần thai"
+            onPress={() => setShowWeeks((v) => !v)}
+            style={{ paddingVertical: 8 }}
+          >
+            <Text style={s.caption}>
+              Minh họa đủ {week} tuần · Đổi tuần {showWeeks ? "⌃" : "⌄"}
+            </Text>
+          </Pressable>
+          {showWeeks && (
+            <ScrollView
+              ref={weeksRef}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.weeks}
+              onContentSizeChange={() =>
+                weeksRef.current?.scrollTo({
+                  x: Math.max(0, week * 75 - 120),
+                  animated: false,
+                })
+              }
+            >
+              {Array.from({ length: 43 }, (_, i) => (
+                <Pressable
+                  key={i}
+                  accessibilityLabel={`Xem đủ ${i} tuần`}
+                  accessibilityState={{ selected: week === i }}
+                  aria-selected={week === i}
+                  onPress={() => setPreview(i)}
+                  style={[s.week, week === i && { backgroundColor: "#fff" }]}
+                >
+                  <Text
+                    style={[
+                      s.weekText,
+                      week === i && { color: "#A35B44", fontWeight: "700" },
+                    ]}
+                  >
+                    {i} tuần
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          )}
+          {preview !== null && (
+            <Pressable style={{ padding: 12 }} onPress={() => setPreview(null)}>
+              <Text
+                style={{
+                  color: "#9C594C",
+                  textAlign: "center",
+                  fontWeight: "600",
+                }}
               >
-                {i} tuần
+                Về tuần của ngày đã chọn
+              </Text>
+            </Pressable>
+          )}
+          <View style={s.quick}>
+            {(
+              [
+                [
+                  "Chi tiết",
+                  "baby-face-outline",
+                  () => growth && openPregnancyArticle(growth.id),
+                ],
+                ["Triệu chứng", "plus", () => diary("symptoms")],
+                ["Cân nặng", "scale-bathroom", () => diary("weight")],
+              ] as const
+            ).map(([title, icon, action], i) => (
+              <Pressable
+                key={title}
+                accessibilityRole="button"
+                onPress={action}
+                style={s.quickButton}
+              >
+                <View
+                  style={[
+                    s.quickIcon,
+                    i === 0 && { backgroundColor: "#E66E8D" },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name={icon}
+                    size={26}
+                    color={i === 0 ? "#fff" : "#46363D"}
+                  />
+                </View>
+                <Text style={s.quickText}>{title}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+        <View style={s.section}>
+          <View style={s.sectionHeading}>
+            <Text style={[p.heading, { flex: 1 }]}>Thông tin hằng ngày</Text>
+            <Text style={p.muted}>
+              {preview !== null
+                ? `Đủ ${week} tuần`
+                : day === today
+                  ? "Hôm nay"
+                  : "Ngày đã chọn"}
+            </Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12, paddingBottom: 4 }}
+          >
+            {[growth, body, insight]
+              .filter((a) => !!a)
+              .map((article) => (
+                <Pressable
+                  key={article.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={article.title}
+                  onPress={() => openPregnancyArticle(article.id)}
+                  style={[
+                    s.story,
+                    {
+                      backgroundColor: {
+                        growth: "#FCE2D6",
+                        body: "#EADFF2",
+                        inside: "#DEEEEA",
+                      }[article.section],
+                    },
+                  ]}
+                >
+                  <Text style={s.storyCategory}>
+                    {
+                      {
+                        growth: "BÉ LỚN MỖI NGÀY",
+                        body: "CƠ THỂ CỦA MẸ",
+                        inside: "BÉ TRONG BỤNG",
+                      }[article.section]
+                    }
+                  </Text>
+                  {article.images[0] ? (
+                    <Image
+                      source={pregnancyImageSources[article.images[0]]}
+                      style={s.storyImage}
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="baby-face-outline"
+                      size={54}
+                      color="#B6786F"
+                      style={{ alignSelf: "center", marginVertical: 16 }}
+                    />
+                  )}
+                  <Text style={s.storyTitle} numberOfLines={3}>
+                    {article.title}
+                  </Text>
+                </Pressable>
+              ))}
+          </ScrollView>
+        </View>
+        <View style={[p.card, s.panel]}>
+          <Text style={p.heading}>Điều gì đang diễn ra ở tuần {week}?</Text>
+          <View style={{ flexDirection: "row", gap: 6 }}>
+            {pregnancySections.map((section) => (
+              <Pressable
+                key={section.id}
+                accessibilityRole="button"
+                onPress={() =>
+                  router.push({
+                    pathname: "/pregnancy/library",
+                    params: { section: section.id, week: String(week) },
+                  })
+                }
+                style={s.category}
+              >
+                <MaterialCommunityIcons
+                  name={section.icon}
+                  size={35}
+                  color={section.color}
+                />
+                <Text style={s.categoryTitle}>{section.title}</Text>
+              </Pressable>
+            ))}
+          </View>
+          {growth && <PregnancyArticleRow article={growth} />}
+          {body ? (
+            <PregnancyArticleRow article={body} />
+          ) : (
+            <Text style={p.muted}>
+              Nhóm thay đổi cơ thể mẹ bắt đầu từ đủ 3 tuần trong bộ dữ liệu này.
+            </Text>
+          )}
+        </View>
+        <View style={[p.card, s.panel]}>
+          <View style={s.sectionHeading}>
+            <Text style={[p.heading, { flex: 1 }]}>Mẹ hôm nay thế nào?</Text>
+            <Ionicons name="heart-outline" size={22} color="#DB607F" />
+          </View>
+          <Text style={p.muted}>
+            Ghi lại cảm giác của mẹ để hai người cùng theo dõi. Những gì bạn ghi
+            sẽ được chia sẻ trong gia đình.
+          </Text>
+          {records.map((record) => (
+            <Pressable
+              key={record.id}
+              onPress={() =>
+                router.push({
+                  pathname: "/pregnancy/diary",
+                  params: { id: record.id },
+                })
+              }
+              style={s.diaryPreview}
+            >
+              <Text style={p.rowTitle}>{record.created_by_name}</Text>
+              <Text style={p.muted} numberOfLines={3}>
+                {record.details?.summary || record.note || "Đã ghi nhật ký"}
+              </Text>
+              <Text style={s.saved}>
+                {record.sync_state === "synced"
+                  ? "Đã đồng bộ"
+                  : "Đã lưu trên máy · chờ đồng bộ"}
               </Text>
             </Pressable>
           ))}
-        </ScrollView>
-        {preview !== null && (
-          <Pressable style={{ padding: 12 }} onPress={() => setPreview(null)}>
-            <Text
-              style={{
-                color: "#9C594C",
-                textAlign: "center",
-                fontWeight: "600",
-              }}
-            >
-              Về tuần của ngày đã chọn
-            </Text>
-          </Pressable>
-        )}
-        <View style={s.quick}>
-          {(
-            [
-              [
-                "Chi tiết",
-                "baby-face-outline",
-                () => growth && openPregnancyArticle(growth.id),
-              ],
-              ["Triệu chứng", "plus", () => diary("symptoms")],
-              ["Tình dục", "heart-outline", () => diary("sex")],
-              ["Cân nặng", "scale-bathroom", () => diary("weight")],
-            ] as const
-          ).map(([title, icon, action], i) => (
-            <Pressable
-              key={title}
-              accessibilityRole="button"
-              onPress={action}
-              style={s.quickButton}
-            >
-              <View
-                style={[s.quickIcon, i === 0 && { backgroundColor: "#E66E8D" }]}
-              >
-                <MaterialCommunityIcons
-                  name={icon}
-                  size={26}
-                  color={i === 0 ? "#fff" : "#46363D"}
-                />
-              </View>
-              <Text style={s.quickText}>{title}</Text>
-            </Pressable>
-          ))}
-        </View>
-      </LinearGradient>
-      <View style={s.section}>
-        <View style={s.sectionHeading}>
-          <Text style={[p.heading, { flex: 1 }]}>Thông tin hằng ngày</Text>
-          <Text style={p.muted}>
-            {preview !== null
-              ? `Đủ ${week} tuần`
-              : day === today
-                ? "Hôm nay"
-                : "Ngày đã chọn"}
-          </Text>
-        </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 12, paddingBottom: 4 }}
-        >
-          {[growth, body, insight]
-            .filter((a) => !!a)
-            .map((article) => (
-              <Pressable
-                key={article.id}
-                accessibilityRole="button"
-                accessibilityLabel={article.title}
-                onPress={() => openPregnancyArticle(article.id)}
-                style={[
-                  s.story,
-                  {
-                    backgroundColor: {
-                      growth: "#FCE2D6",
-                      body: "#EADFF2",
-                      inside: "#DEEEEA",
-                    }[article.section],
-                  },
-                ]}
-              >
-                <Text style={s.storyCategory}>
-                  {
-                    {
-                      growth: "BÉ LỚN MỖI NGÀY",
-                      body: "CƠ THỂ CỦA MẸ",
-                      inside: "BÉ TRONG BỤNG",
-                    }[article.section]
-                  }
-                </Text>
-                {article.images[0] ? (
-                  <Image
-                    source={pregnancyImageSources[article.images[0]]}
-                    style={s.storyImage}
-                    resizeMode="contain"
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="baby-face-outline"
-                    size={54}
-                    color="#B6786F"
-                    style={{ alignSelf: "center", marginVertical: 16 }}
-                  />
-                )}
-                <Text style={s.storyTitle} numberOfLines={3}>
-                  {article.title}
-                </Text>
-              </Pressable>
-            ))}
-        </ScrollView>
-      </View>
-      <View style={[p.card, s.panel]}>
-        <Text style={p.heading}>Điều gì đang diễn ra ở tuần {week}?</Text>
-        <View style={{ flexDirection: "row", gap: 6 }}>
-          {pregnancySections.map((section) => (
-            <Pressable
-              key={section.id}
-              accessibilityRole="button"
-              onPress={() =>
-                router.push({
-                  pathname: "/pregnancy/library",
-                  params: { section: section.id, week: String(week) },
-                })
-              }
-              style={s.category}
-            >
-              <MaterialCommunityIcons
-                name={section.icon}
-                size={35}
-                color={section.color}
-              />
-              <Text style={s.categoryTitle}>{section.title}</Text>
-            </Pressable>
-          ))}
-        </View>
-        {growth && <PregnancyArticleRow article={growth} />}
-        {body ? (
-          <PregnancyArticleRow article={body} />
-        ) : (
-          <Text style={p.muted}>
-            Nhóm thay đổi cơ thể mẹ bắt đầu từ đủ 3 tuần trong bộ dữ liệu này.
-          </Text>
-        )}
-      </View>
-      <View style={[p.card, s.panel]}>
-        <View style={s.sectionHeading}>
-          <Text style={[p.heading, { flex: 1 }]}>Mẹ hôm nay thế nào?</Text>
-          <Ionicons name="heart-outline" size={22} color="#DB607F" />
-        </View>
-        <Text style={p.muted}>
-          Ghi lại cảm giác của mẹ để hai người cùng theo dõi. Những gì bạn ghi
-          sẽ được chia sẻ trong gia đình.
-        </Text>
-        {records.map((record) => (
           <Pressable
-            key={record.id}
-            onPress={() =>
-              router.push({
-                pathname: "/pregnancy/diary",
-                params: { id: record.id },
-              })
-            }
-            style={s.diaryPreview}
+            testID="pregnancy-log"
+            style={p.action}
+            onPress={() => diary()}
           >
-            <Text style={p.rowTitle}>{record.created_by_name}</Text>
-            <Text style={p.muted} numberOfLines={3}>
-              {record.details?.summary || record.note || "Đã ghi nhật ký"}
-            </Text>
-            <Text style={s.saved}>
-              {record.sync_state === "synced"
-                ? "Đã đồng bộ"
-                : "Đã lưu trên máy · chờ đồng bộ"}
+            <Text style={p.actionText}>
+              {records.length ? "Xem / ghi nhật ký" : "Ghi lại hôm nay"}
             </Text>
           </Pressable>
-        ))}
-        <Pressable
-          testID="pregnancy-log"
-          style={p.action}
-          onPress={() => diary()}
-        >
-          <Text style={p.actionText}>
-            {records.length ? "Xem / ghi nhật ký" : "Ghi lại hôm nay"}
-          </Text>
-        </Pressable>
-      </View>
-      <View style={[p.card, s.panel]}>
-        <Text style={p.heading}>Hiểu thêm về bé</Text>
-        {[insight, inside[(week + 1) % inside.length]!].map((article) => (
-          <PregnancyArticleRow key={article.id} article={article} />
-        ))}
-        <Pressable
-          style={p.pill}
-          onPress={() => router.push("/pregnancy/library")}
-        >
-          <Text style={p.pillText}>Khám phá 92 bài viết ngoại tuyến</Text>
-        </Pressable>
-      </View>
-      <Text style={[p.muted, { margin: 20 }]}>
-        Tuổi thai ước tính từ ngày dự sinh (mốc 40 tuần); lịch khám và kết luận
-        của bác sĩ được ưu tiên. Bài đọc chỉ để tham khảo, không chẩn đoán tình
-        trạng của mẹ hoặc bé.
-      </Text>
-    </Screen>
+        </View>
+        <View style={[p.card, s.panel]}>
+          <Text style={p.heading}>Hiểu thêm về bé</Text>
+          {[insight, inside[(week + 1) % inside.length]!].map((article) => (
+            <PregnancyArticleRow key={article.id} article={article} />
+          ))}
+          <Pressable
+            style={p.pill}
+            onPress={() => router.push("/pregnancy/library")}
+          >
+            <Text style={p.pillText}>Khám phá 92 bài viết ngoại tuyến</Text>
+          </Pressable>
+        </View>
+        <Text style={[p.muted, { margin: 20 }]}>
+          Tuổi thai ước tính từ ngày dự sinh (mốc 40 tuần); lịch khám và kết
+          luận của bác sĩ được ưu tiên. Bài đọc chỉ để tham khảo, không chẩn
+          đoán tình trạng của mẹ hoặc bé.
+        </Text>
+      </Screen>
+    </View>
   );
 }
 const s = StyleSheet.create({
@@ -429,7 +527,7 @@ const s = StyleSheet.create({
   topline: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 18,
+    marginBottom: 6,
     gap: 10,
   },
   eyebrow: {
@@ -439,9 +537,9 @@ const s = StyleSheet.create({
     letterSpacing: 1.3,
     marginBottom: 5,
   },
-  bell: { padding: 12, backgroundColor: "#FFFFFF99", borderRadius: 26 },
-  age: { alignItems: "center", gap: 7, marginTop: 22 },
-  ageTitle: { fontSize: 25, fontWeight: "700", color: "#96583F" },
+  bell: { padding: 8, backgroundColor: "#FFFFFF99", borderRadius: 26 },
+  age: { alignItems: "center", gap: 7, marginTop: 14 },
+  ageTitle: { fontSize: 23, fontWeight: "700", color: "#96583F" },
   ageSubtitle: {
     fontSize: 12,
     color: "#9C766A",
@@ -450,9 +548,9 @@ const s = StyleSheet.create({
   },
   heroImage: {
     marginTop: 12,
-    padding: 10,
-    borderRadius: 28,
-    backgroundColor: "#FFFFFF66",
+    marginHorizontal: -18,
+    aspectRatio: 1,
+    overflow: "hidden",
   },
   caption: {
     textAlign: "center",

@@ -394,6 +394,13 @@ function DiaryForm({
         khỏe hoặc lo lắng về mẹ hay bé, hãy liên hệ người theo dõi thai kỳ;
         không chờ lời nhắc của app.
       </Text>
+      {!readonly && (
+        <Text style={p.muted}>
+          Khi lưu hoặc đổi cân nặng/triệu chứng, app sẽ gửi các mục này qua
+          Telegram cho người còn lại sau khi đồng bộ (nếu đã liên kết bot). Ghi
+          chú, thuốc và tâm trạng không được gửi trong tin Telegram.
+        </Text>
+      )}
       {!!error && (
         <Text
           accessibilityRole="alert"

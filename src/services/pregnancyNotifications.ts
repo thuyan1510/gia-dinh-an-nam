@@ -2,14 +2,30 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import type { SQLiteDatabase } from "expo-sqlite";
 import type { Child } from "../types";
-import { notificationAllowed } from "./notifications";
+import {
+  notificationAllowed,
+  prepareNotifications,
+  requestNotificationPermission,
+} from "./notifications";
 import {
   parsePregnancyReminders,
   planPregnancyReminders,
   type PregnancyReminderSettings,
 } from "../lib/pregnancyReminderPlan";
-import { stringDetails } from "../lib/recordValidation";
 const preferenceKey = (childId: string) => `pregnancy-reminders:${childId}`;
+/** Called on opening the pregnancy screen, not from background reconciliation. */
+export async function activatePregnancyReminders(
+  db: SQLiteDatabase,
+  childId: string,
+) {
+  if (Platform.OS === "web") return;
+  const settings = await readPregnancyReminderSettings(db, childId);
+  if (!settings.enabled) return;
+  await prepareNotifications();
+  if (!(await requestNotificationPermission()))
+    throw new Error("Notification permission not granted");
+  await reconcilePregnancyNotifications(db);
+}
 export async function readPregnancyReminderSettings(
   db: SQLiteDatabase,
   childId: string,
@@ -33,6 +49,7 @@ export async function savePregnancyReminderSettings(
 }
 export type PregnancyNotificationStatus = {
   count: number;
+  dailyCount: number;
   through: string | null;
   allowed: boolean;
   supported: boolean;
@@ -57,7 +74,13 @@ async function reconcile(
   db: SQLiteDatabase,
 ): Promise<PregnancyNotificationStatus> {
   if (Platform.OS === "web")
-    return { count: 0, through: null, allowed: false, supported: false };
+    return {
+      count: 0,
+      dailyCount: 0,
+      through: null,
+      allowed: false,
+      supported: false,
+    };
   const permission = await Notifications.getPermissionsAsync();
   const allowed = notificationAllowed(permission);
   const children = await db.getAllAsync<Child>(
@@ -66,19 +89,7 @@ async function reconcile(
   const profiles = await Promise.all(
     children.map(async (child) => {
       const settings = await readPregnancyReminderSettings(db, child.id);
-      if (!settings.enabled || child.birthday || !child.due_date)
-        return { child, settings, recordedDays: new Set<string>() };
-      const recorded = await db.getAllAsync<{ details: string }>(
-        "SELECT details FROM care_entries WHERE child_id=? AND kind='activity' AND deleted_at IS NULL",
-        child.id,
-      );
-      const recordedDays = new Set(
-        recorded
-          .map((r) => stringDetails(r.details))
-          .filter((d) => d.tool === "pregnancy-today" && d.day)
-          .map((d) => d.day!),
-      );
-      return { child, settings, recordedDays };
+      return { child, settings };
     }),
   );
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
@@ -117,23 +128,34 @@ async function reconcile(
           scope: "pregnancy-v1",
           route: "/pregnancy",
           childId: request.childId,
-          day: request.day,
+          day: request.repeatsDaily ? null : request.day,
+          repeatsDaily: request.repeatsDaily,
           kind: request.kind,
           articleId: request.articleId ?? null,
           signature: request.signature,
         },
       },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-        date: request.at,
-        channelId: Platform.OS === "android" ? "family-reminders" : undefined,
-      },
+      trigger: request.repeatsDaily
+        ? {
+            type: Notifications.SchedulableTriggerInputTypes.DAILY,
+            hour: request.at.getHours(),
+            minute: request.at.getMinutes(),
+            channelId:
+              Platform.OS === "android" ? "family-reminders" : undefined,
+          }
+        : {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: request.at,
+            channelId:
+              Platform.OS === "android" ? "family-reminders" : undefined,
+          },
     });
   }
   return {
     supported: true,
     allowed,
     count: planned.length,
-    through: planned.at(-1)?.day ?? null,
+    dailyCount: planned.filter((r) => r.repeatsDaily).length,
+    through: planned.filter((r) => !r.repeatsDaily).at(-1)?.day ?? null,
   };
 }

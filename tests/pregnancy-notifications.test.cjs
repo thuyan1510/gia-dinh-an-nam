@@ -24,7 +24,7 @@ let schedulingError = false;
 const native = {
   setNotificationHandler() {},
   IosAuthorizationStatus: { PROVISIONAL: 3 },
-  SchedulableTriggerInputTypes: { DATE: "date" },
+  SchedulableTriggerInputTypes: { DATE: "date", DAILY: "daily" },
   getPermissionsAsync: async () => ({ granted: allowed }),
   getAllScheduledNotificationsAsync: async () => [...scheduled.values()],
   cancelScheduledNotificationAsync: async (id) => {
@@ -84,6 +84,16 @@ test("native reconciliation is idempotent, isolated and entirely independent of 
   await savePregnancyReminderSettings(db, "c1", settings);
   const first = await reconcilePregnancyNotifications(db);
   assert.equal(first.count, 12);
+  assert.equal(first.dailyCount, 2);
+  const repeats = [...scheduled.values()].filter(
+    (r) => r.trigger?.type === "daily",
+  );
+  assert.equal(repeats.length, 2);
+  assert.ok(
+    repeats.every(
+      (r) => r.content.data.day === null && r.content.data.repeatsDaily,
+    ),
+  );
   const signatures = [...scheduled.values()].map(
     (v) => v.content.data.signature,
   );
