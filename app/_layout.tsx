@@ -2,7 +2,9 @@ import { router, Stack, useSegments } from "expo-router";
 import * as Notifications from "expo-notifications";
 import { SQLiteProvider } from "expo-sqlite";
 import { useEffect, useRef } from "react";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
+import { pregnancyArticles } from "../src/data/pregnancy";
+import { pregnancyDayNumber } from "../src/lib/pregnancy";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -13,9 +15,10 @@ import { setDiagnosticScreen } from "../src/lib/crashReporting";
 export { RecoverableError as ErrorBoundary } from "../src/components/RecoverableError";
 
 function NotificationNavigation() {
-  const { reminders, completeReminder, loading } = useApp();
-  const state = useRef({ reminders, completeReminder });
-  state.current = { reminders, completeReminder };
+  const { reminders, completeReminder, loading, children, selectChild } =
+    useApp();
+  const state = useRef({ reminders, completeReminder, children, selectChild });
+  state.current = { reminders, completeReminder, children, selectChild };
   const handled = useRef<string | null>(null);
   useEffect(() => {
     if (loading || Platform.OS === "web") return;
@@ -30,6 +33,48 @@ function NotificationNavigation() {
       if (response.actionIdentifier === "DONE" && reminder)
         void state.current.completeReminder(reminder).catch(() => undefined);
       const route = response.notification.request.content.data?.route;
+      const data = response.notification.request.content.data;
+      if (route === "/pregnancy" && data?.scope === "pregnancy-v1") {
+        const target = state.current.children.find(
+          (c) => c.id === data.childId,
+        );
+        if (target) {
+          void state.current
+            .selectChild(target.id)
+            .then(() => {
+              if (
+                data.kind === "info" &&
+                typeof data.articleId === "string" &&
+                pregnancyArticles.some((a) => a.id === data.articleId)
+              ) {
+                router.push({
+                  pathname: "/pregnancy/article/[id]",
+                  params: { id: data.articleId },
+                });
+              } else {
+                const day =
+                  typeof data.day === "string" &&
+                  pregnancyDayNumber(data.day) !== null
+                    ? data.day
+                    : undefined;
+                router.push({
+                  pathname: "/pregnancy",
+                  params: day ? { day } : {},
+                });
+              }
+            })
+            .catch(() =>
+              Alert.alert(
+                "Chưa mở được hồ sơ bé",
+                "Hãy chọn bé trong tab Em bé rồi thử lại.",
+              ),
+            );
+        } else
+          Alert.alert(
+            "Hồ sơ không còn trên máy",
+            "Thông báo thuộc hồ sơ đã đổi hoặc không nằm trong gia đình hiện tại.",
+          );
+      }
       if (
         typeof route === "string" &&
         [

@@ -44,8 +44,8 @@ test("assistant tools have unique IDs, valid original PNG assets and implemented
           path.join(
             __dirname,
             "../app",
-            tool.route === "/easy"
-              ? "easy/index.tsx"
+            ["/easy", "/pregnancy"].includes(tool.route)
+              ? `${tool.route.slice(1)}/index.tsx`
               : `${["/lich", "/theo-doi", "/gia-dinh"].includes(tool.route) ? "(tabs)" : ""}${tool.route}.tsx`,
           ),
         ),

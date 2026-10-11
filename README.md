@@ -1,5 +1,13 @@
 # Gia Đình An Nam
 
+**0.7.0 (build 8)** thêm **Em bé → giai đoạn thai kỳ → Trạng thái hôm nay**, ngay sau Đếm cú đạp. Bố cục tham khảo video Flo do người dùng cung cấp: minh họa/chọn tuần, ghi nhanh, thẻ bài hằng ngày và thư viện ba nhóm. Có 43 bài phát triển theo tuần tiếng Việt, 40 bài thay đổi cơ thể mẹ và 9 bài về thai nhi dịch từ tiếng Anh, cùng 76 ảnh đóng gói trong IPA. Không gọi API/CDN Flo hoặc dịch trực tuyến khi dùng app. Bài không có ảnh được ghi rõ; chưa có mô hình 3D hoặc bộ 40 hình thai nhi riêng. Dữ liệu tham khảo của bên thứ ba không thuộc giấy phép mã nguồn của app, chưa xác lập quyền phân phối lại.
+
+Nhật ký thai kỳ dùng `care_entries` và hàng đợi đồng bộ hiện có, phân biệt bé/ngày/người ghi; không cần migration hoặc Function mới. Các bản dịch có hiệu đính thuật ngữ, giữ bản tiếng Anh để đối chiếu nhưng **chưa được thẩm định y khoa**. Các mốc tuần là **số tuần đã hoàn thành**, không phải vị trí trong danh mục. Đọc nguồn và giới hạn ngay trong từng bài; không dùng nhật ký để chẩn đoán.
+
+Trong Trạng thái hôm nay, chạm chuông để bật **nhắc cục bộ trên từng điện thoại**. Mặc định chưa bật; gợi ý đọc bài lúc 09:00, ghi nhật ký lúc 20:30 (tùy chọn). IPA Flo có nhãn mở bài triệu chứng nhưng không tìm thấy lịch giờ/mẫu nội dung tương ứng ảnh thông báo; `reminders.json` là hoạt ảnh Lottie, không phải lịch. Các giờ này là lựa chọn của An Nam. Đặt tối đa 12 thông báo thai kỳ gần nhất trong 14 ngày, chừa dung lượng cho lịch gia đình; mở app để bổ sung lịch. Tự thay/hủy khi nhận được đổi dự sinh, bé đã sinh, tắt nhắc hoặc đổi gia đình. Không cần APNs; iOS/Focus vẫn có thể hạn chế cảnh báo. Lời nhắc Telegram hiện có không bị thay đổi.
+
+Kiểm thử riêng: `node --test tests/pregnancy*.test.cjs`. Kiểm thử giao diện local-only: chạy Expo web trên cổng 8092 với `EXPO_NO_DOTENV=1`, hai biến `EXPO_PUBLIC_SUPABASE_*` trống, rồi chạy `scripts/pregnancy_ui_smoke.cjs` (cần `playwright-core` và Chromium). Không dùng hồ sơ trình duyệt đã đăng nhập. Không thay kiểm thử iOS, bàn phím và nhận thông báo thật trên hai máy.
+
 **0.6.0 (build 7, đang kiểm thử)** chuyển sang **Telegram + nhắc cục bộ**, thay chat bằng lời nhắc có xác nhận, chọn ngày/giờ bằng nút, thêm ba kiểu widget iPhone. Xem [hướng dẫn triển khai Telegram và widget](docs/TELEGRAM_SETUP.md). Cần migration **0005**, bot, ba Functions và Cron/webhook; chưa triển khai backend thật hoặc xác minh widget trên thiết bị. Widget dữ liệu cần quyền App Group hợp lệ khi ký, không phải chỉ cài IPA là đủ.
 
 Các mục 0.5 trở về trước dưới đây lưu lịch sử; hướng dẫn APNs/chat không còn áp dụng cho bản 0.6.

@@ -7,7 +7,8 @@ export type AssistantTool = {
   title: string;
   color: string;
   image?: ImageSourcePropType;
-  symbol?: "calendar-outline" | "list-outline" | "newspaper-outline";
+  symbol?:
+    "calendar-outline" | "list-outline" | "newspaper-outline" | "heart-pulse";
   route?: string;
   section?: string;
   kind?: CareKind;
@@ -252,6 +253,13 @@ export const assistantTools: AssistantTool[] = [
     hint: "Chỉ ghi liều đã dùng theo chỉ định; app không đề xuất liều thuốc.",
   },
 ];
+assistantTools.push({
+  id: "pregnancy-today",
+  title: "Trạng thái hôm nay",
+  color: "#E57891",
+  symbol: "heart-pulse",
+  route: "/pregnancy",
+});
 export const bornTools = assistantTools.slice(0, 17);
 export const pregnancyTools = [
   "pregnancy",
@@ -260,6 +268,7 @@ export const pregnancyTools = [
   "fetal",
   "weekly",
   "kick",
+  "pregnancy-today",
 ].map((id) => assistantTools.find((t) => t.id === id)!);
 export function findAssistantTool(id?: string) {
   return assistantTools.find((t) => t.id === id);

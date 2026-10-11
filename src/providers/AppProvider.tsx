@@ -29,6 +29,7 @@ import { selectActiveChild } from "../lib/childRecords";
 import { isSupabaseConfigured } from "../lib/supabase";
 import { coalescedTask } from "../lib/syncRunner";
 import { syncWidgets } from "../services/widgets";
+import { reconcilePregnancyNotifications } from "../services/pregnancyNotifications";
 import {
   subscribeFamilyChanges,
   synchronizeFamily,
@@ -93,6 +94,7 @@ export function AppProvider({ children }: PropsWithChildren) {
         setSnapshot(next);
         setPendingSyncCount(pending);
         void syncWidgets(db, next).catch(() => undefined);
+        void reconcilePregnancyNotifications(db).catch(() => undefined);
       }
     } catch (nextError) {
       if (request === refreshSequence.current)
@@ -148,6 +150,7 @@ export function AppProvider({ children }: PropsWithChildren) {
     const subscription = AppState.addEventListener("change", (state) => {
       if (state === "active") {
         void reconcileSyncedReminders(db).catch(() => undefined);
+        void refresh();
         if (isSupabaseConfigured) void syncNow();
       }
     });

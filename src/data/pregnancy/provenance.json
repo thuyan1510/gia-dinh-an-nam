@@ -1,0 +1,13 @@
+{
+  "importedAt": "2026-10-10T11:56:21.722Z",
+  "input": "User-provided flo_sections_fixed_output",
+  "counts": {
+    "growth": 43,
+    "body": 40,
+    "inside": 9,
+    "images": 76
+  },
+  "translation": "49 English articles machine-translated into Vietnamese using Google Translate, originals retained. Not medically reviewed.",
+  "images": "Public image URLs supplied with the article export; fetched at build preparation only. No Flo account/API credentials used.",
+  "license": "Third-party reference material supplied by the user for their private family app. Not covered by the application source license; redistribution rights are not established."
+}

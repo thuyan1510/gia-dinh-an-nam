@@ -1,4 +1,4 @@
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import type { AssistantTool } from "../data/assistant";
@@ -42,6 +42,12 @@ export function AssistantIcon({
             d="M0 192v272a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48V192zm192 176a16 16 0 0 1-16 16H80a16 16 0 0 1-16-16v-96a16 16 0 0 1 16-16h96a16 16 0 0 1 16 16zm112-240h32a16 16 0 0 0 16-16V16a16 16 0 0 0-16-16h-32a16 16 0 0 0-16 16v96a16 16 0 0 0 16 16zm-192 0h32a16 16 0 0 0 16-16V16a16 16 0 0 0-16-16h-32a16 16 0 0 0-16 16v96a16 16 0 0 0 16 16z"
           />
         </Svg>
+      ) : tool.symbol === "heart-pulse" ? (
+        <MaterialCommunityIcons
+          name="heart-pulse"
+          color={tool.color}
+          size={size * 0.6}
+        />
       ) : tool.id === "teeth" ? (
         <FontAwesome5 name="tooth" solid color={tool.color} size={size * 0.5} />
       ) : tool.image ? (

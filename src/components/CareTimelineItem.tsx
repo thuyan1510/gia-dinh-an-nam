@@ -24,7 +24,13 @@ export function CareTimelineItem({ entry }: { entry: CareEntry }) {
       style={styles.row}
       accessibilityLabel={`Sửa ${label}`}
       onPress={() =>
-        router.push({ pathname: "/record/new", params: { id: entry.id } })
+        router.push({
+          pathname:
+            entry.details?.tool === "pregnancy-today"
+              ? "/pregnancy/diary"
+              : "/record/new",
+          params: { id: entry.id },
+        })
       }
     >
       {tool ? (
@@ -55,6 +61,10 @@ export function CareTimelineItem({ entry }: { entry: CareEntry }) {
                     "medalId",
                     "templateId",
                     "wakeTime",
+                    "selections",
+                    "day",
+                    "waterMl",
+                    "weight",
                   ].includes(key),
               )
               .map(([, value]) => value)
