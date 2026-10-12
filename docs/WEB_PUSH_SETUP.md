@@ -10,6 +10,14 @@ Repository mới: [HasiramaTuna/gia-dinh-an-nam](https://github.com/HasiramaTuna
 
 Hosting PWA và bộ VAPID đang chờ xác nhận địa chỉ xuất bản; cài IPA chưa tự hoàn tất hai mục này. Chỉ shell công khai được upload, không phải dữ liệu gia đình.
 
+### Chặn build ở tài khoản GitHub mới
+
+Mã đã push lên `main` của repository mới. Ngày 12/10/2026, gọi **Run workflow** bị GitHub trả `HTTP 422: Actions has been disabled for this user.` Kiểm tra repository cho thấy Actions đã bật, nhưng tài khoản bị hạn chế chạy Actions. Chưa có lượt build hay IPA mới từ repository này; không phải lỗi build mã nguồn.
+
+1. Đăng nhập GitHub bằng `HasiramaTuna`, kiểm tra thông báo/yêu cầu xác minh tài khoản. Nếu không có cách tự mở lại, liên hệ GitHub Support, gửi nguyên văn lỗi trên và tên repository. Chưa xác định nguyên nhân hạn chế; thay secrets hoặc sửa YAML không giải quyết được hạn chế cấp tài khoản.
+2. Sau khi Actions được mở lại: repository → Actions → **Build IPA for ESign** → **Run workflow** → chọn `main` → chạy. Hoặc báo lại để tôi chạy và theo dõi giúp.
+3. Chỉ tải artifact khi lượt build kết thúc **Success**; xem cách ký/cài ở bước 6. Nếu chọn Pages, workflow **Deploy notification PWA** cũng cần Actions được mở lại.
+
 ## 1. Đăng nhập Supabase
 
 ```bash
