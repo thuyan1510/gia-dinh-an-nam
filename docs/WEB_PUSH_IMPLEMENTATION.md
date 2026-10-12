@@ -60,5 +60,6 @@ Nguồn thật → `notification_events` → delivery Web Push từng máy và T
 - Deno check ba Functions và test mã hóa aes128gcm thật rồi giải mã bằng khóa thiết bị thử. Transport giả lập chỉ trong test, production dùng fetch thật.
 - Playwright thai kỳ 390×844 / 414×896: lịch tuần, tạo/sửa nhật ký, thư viện/ảnh, không request Flo/backend/dịch và không lỗi JS.
 - Playwright PWA: không tự xin quyền, pairing fixture, denied, pending target khi cold-root, receipt sau config, nội dung sau auth, offline fallback; không cache API riêng tư hay fake native-open.
+- `scripts/notification_ui_smoke.cjs`: target sai, mục tiêu còn khi chuyển sang tài khoản, lời nhắc local-only mở đúng bản ghi, notification ID từ xa không được đi nhánh local-only. Không lỗi JS. Chi tiết care dùng bộ lọc JSON cũ đã có để không đưa object sai kiểu vào React Native Text.
 
 Chưa xác minh: deploy production mới, nhà cung cấp → hai iPhone, khóa máy/Focus, Safari/PWA/IPA cold và warm start, đăng nhập lại, mất mạng rồi nối lại, IPA chưa cài. Browser smoke không thay thế kiểm tra safe area/bàn phím/native navigation. Theo dõi build 0.8.0 ở GitHub Actions; run 0.7.1 không phải bằng chứng cho bản mới.

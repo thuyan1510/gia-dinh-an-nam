@@ -16,6 +16,7 @@ import {
 import { FamilyPhoto } from "../../src/components/FamilyPhoto";
 import { formStyles as s } from "../../src/components/forms";
 import { parseNotificationTarget } from "../../src/lib/notificationTarget";
+import { stringDetails } from "../../src/lib/recordValidation";
 import { webPushAction } from "../../src/services/webPush";
 import { supabase } from "../../src/lib/supabase";
 import { useApp } from "../../src/providers/AppProvider";
@@ -197,14 +198,11 @@ export default function NotificationOpen() {
       };
     }, [load]),
   );
-  let details = record?.details;
-  if (typeof details === "string" && target?.type !== "reminder") {
-    try {
-      details = JSON.parse(details);
-    } catch {
-      details = undefined;
-    }
-  }
+  // Reuse the legacy-safe decoder: malformed JSON objects must never reach Text.
+  const details =
+    target?.type === "reminder" && typeof record?.details === "string"
+      ? record.details
+      : stringDetails(record?.details);
   const title = {
     reminder: "Lời nhắc",
     post: "Bài đăng",
