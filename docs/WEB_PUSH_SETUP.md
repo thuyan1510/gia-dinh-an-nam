@@ -6,17 +6,17 @@ Mã nằm trong bản 0.8.0. **Cài IPA mới chưa tự bật Web Push**: còn 
 
 Ngày 12/10/2026 đã đăng nhập và nâng đúng project `gkqlakxrjeflnfnmghma`: áp dụng 0006 + 0007, deploy `webpush-account`, `webpush-device`, `telegram-worker`, chạy `web_push_dispatch.sql`. Cả 5 bảng mới có RLS; giữ duy nhất Cron `an-nam-telegram-minute`. Không cần chạy lại bước 3–4 cho project này. Chưa nghiệm thu nhận thông báo trên iPhone.
 
-Repository mới: [HasiramaTuna/gia-dinh-an-nam](https://github.com/HasiramaTuna/gia-dinh-an-nam). Đã cấu hình hai Actions secrets `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`. Không đổi project Supabase, tài khoản gia đình hoặc bundle ID khi chuyển GitHub.
+Repository hiện tại: [thuyan1510/gia-dinh-an-nam](https://github.com/thuyan1510/gia-dinh-an-nam). Đã cấu hình hai Actions secrets `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`. Không đổi project Supabase, tài khoản gia đình hoặc bundle ID khi chuyển GitHub.
 
-Hosting PWA và bộ VAPID đang chờ xác nhận địa chỉ xuất bản; cài IPA chưa tự hoàn tất hai mục này. Chỉ shell công khai được upload, không phải dữ liệu gia đình.
+Đã chọn GitHub Pages, bật chế độ GitHub Actions và cấu hình bộ VAPID lần đầu trên Supabase. Địa chỉ PWA: **https://thuyan1510.github.io/gia-dinh-an-nam/**. Chỉ shell công khai được upload, không phải dữ liệu gia đình. Giữ nguyên địa chỉ và bộ khóa này khi cập nhật; không tạo lại khóa ở bước 5.
 
-### Chặn build ở tài khoản GitHub mới
+### Build và xuất bản
 
-Mã đã push lên `main` của repository mới. Ngày 12/10/2026, gọi **Run workflow** bị GitHub trả `HTTP 422: Actions has been disabled for this user.` Kiểm tra repository cho thấy Actions đã bật, nhưng tài khoản bị hạn chế chạy Actions. Chưa có lượt build hay IPA mới từ repository này; không phải lỗi build mã nguồn.
+Mã đã push lên `main` của `thuyan1510`. GitHub đã nhận [lượt build IPA](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38218792661) và [lượt xuất bản PWA](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38218789405). Chỉ tải IPA khi lượt build có kết quả **Success**.
 
-1. Đăng nhập GitHub bằng `HasiramaTuna`, kiểm tra thông báo/yêu cầu xác minh tài khoản. Nếu không có cách tự mở lại, liên hệ GitHub Support, gửi nguyên văn lỗi trên và tên repository. Chưa xác định nguyên nhân hạn chế; thay secrets hoặc sửa YAML không giải quyết được hạn chế cấp tài khoản.
-2. Sau khi Actions được mở lại: repository → Actions → **Build IPA for ESign** → **Run workflow** → chọn `main` → chạy. Hoặc báo lại để tôi chạy và theo dõi giúp.
-3. Chỉ tải artifact khi lượt build kết thúc **Success**; xem cách ký/cài ở bước 6. Nếu chọn Pages, workflow **Deploy notification PWA** cũng cần Actions được mở lại.
+Để cập nhật lần sau: push mã → Actions → **Build IPA for ESign** → **Run workflow** → `main`. Khi sửa PWA, chạy thêm **Deploy notification PWA**. Lỗi hạn chế Actions của tài khoản `HasiramaTuna` là lịch sử, không phải trạng thái repository hiện tại.
+
+Trên hai điện thoại chỉ cần làm **bước 6 và 7** sau khi hai workflow thành công. Các bước máy chủ dưới đây được giữ để bảo trì/khôi phục, không cần chạy lại toàn bộ.
 
 ## 1. Đăng nhập Supabase
 
@@ -91,7 +91,7 @@ Lưu bản khóa trong nơi quản lý bí mật; xóa riêng file tạm sau upl
 
 ## 6. Ghép riêng từng điện thoại
 
-1. Mở [Build IPA for ESign ở repository mới](https://github.com/HasiramaTuna/gia-dinh-an-nam/actions/workflows/build-unsigned-ios.yml), chọn lượt thành công → Artifacts → `gia-dinh-an-nam-unsigned-ipa`. Giải nén, ký tệp `Gia-Dinh-An-Nam-unsigned.ipa` bằng ESign/cài như trước. Giữ bundle ID `vn.giadinhanam.family`; không gỡ app khi chưa chắc dữ liệu đồng bộ và tài khoản có thể khôi phục. Chứng chỉ và mật khẩu ký không cần đưa lên GitHub.
+1. Mở [Build IPA for ESign ở repository mới](https://github.com/thuyan1510/gia-dinh-an-nam/actions/workflows/build-unsigned-ios.yml), chọn lượt thành công → Artifacts → `gia-dinh-an-nam-unsigned-ipa`. Giải nén, ký tệp `Gia-Dinh-An-Nam-unsigned.ipa` bằng ESign/cài như trước. Giữ bundle ID `vn.giadinhanam.family`; không gỡ app khi chưa chắc dữ liệu đồng bộ và tài khoản có thể khôi phục. Chứng chỉ và mật khẩu ký không cần đưa lên GitHub.
 2. IPA → **Cài đặt → Thông báo** → mở PWA bằng Safari → Chia sẻ → Thêm vào Màn hình chính.
 3. Mở biểu tượng **An Nam** vừa cài. Tạo mã 5 phút trong IPA, sao chép vào PWA. Đặt tên “iPhone 15” / “iPhone 11”. Không chia sẻ mã với người khác.
 4. Nhấn **Cho phép và bật Web Push**, đồng ý hộp thoại hệ thống.

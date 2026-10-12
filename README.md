@@ -1,8 +1,8 @@
 # Gia Đình An Nam
 
-**0.8.0 (build 10)** làm lại Trạng thái hôm nay: ảnh thai nhi trong suốt đóng gói sẵn, bỏ header che nội dung, tuổi thai dưới ảnh, dải tuần và nút nhanh gọn hơn. Thêm PWA Web Push + mở đúng bản ghi trong IPA, quản lý từng thiết bị và Telegram dự phòng; giữ nhắc cục bộ. Backend Supabase đã nâng cấp ngày 12/10/2026; hosting/VAPID còn chờ xác nhận và **chưa kiểm chứng nhận trên iPhone**. Xem [thay đổi & kiểm thử](docs/WEB_PUSH_IMPLEMENTATION.md) và [hướng dẫn triển khai, ghép hai máy](docs/WEB_PUSH_SETUP.md). Chỉ cài IPA không tự hoàn thành PWA.
+**0.8.0 (build 10)** làm lại Trạng thái hôm nay: ảnh thai nhi trong suốt đóng gói sẵn, bỏ header che nội dung, tuổi thai dưới ảnh, dải tuần và nút nhanh gọn hơn. Thêm PWA Web Push + mở đúng bản ghi trong IPA, quản lý từng thiết bị và Telegram dự phòng; giữ nhắc cục bộ. Backend Supabase, GitHub Pages và VAPID đã cấu hình ngày 12/10/2026; **chưa kiểm chứng nhận trên iPhone**. Xem [thay đổi & kiểm thử](docs/WEB_PUSH_IMPLEMENTATION.md) và [hướng dẫn triển khai, ghép hai máy](docs/WEB_PUSH_SETUP.md). Mỗi điện thoại cần cài/ghép PWA tại https://thuyan1510.github.io/gia-dinh-an-nam/.
 
-Repository/build hiện tại: [HasiramaTuna/gia-dinh-an-nam](https://github.com/HasiramaTuna/gia-dinh-an-nam), [Build IPA for ESign](https://github.com/HasiramaTuna/gia-dinh-an-nam/actions/workflows/build-unsigned-ios.yml). Các liên kết tài khoản cũ bên dưới chỉ lưu lịch sử.
+Repository/build hiện tại: [thuyan1510/gia-dinh-an-nam](https://github.com/thuyan1510/gia-dinh-an-nam), [Build IPA for ESign](https://github.com/thuyan1510/gia-dinh-an-nam/actions/workflows/build-unsigned-ios.yml). Các liên kết tài khoản cũ bên dưới chỉ lưu lịch sử.
 
 Các mục dưới đây là lịch sử các bản trước.
 

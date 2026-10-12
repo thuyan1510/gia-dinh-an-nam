@@ -1,6 +1,6 @@
 # Bản 0.8.0 (10) — thông báo và màn hình thai kỳ
 
-Cập nhật 12/10/2026. **Chưa nghiệm thu Web Push trên iPhone**. Supabase production đã nâng 0006/0007, ba Functions và trigger đánh thức worker; giữ Cron cũ. Hosting HTTPS/VAPID đang chờ lựa chọn. Repository chuyển sang `HasiramaTuna/gia-dinh-an-nam`. Hướng dẫn triển khai: [WEB_PUSH_SETUP.md](WEB_PUSH_SETUP.md).
+Cập nhật 12/10/2026. **Chưa nghiệm thu Web Push trên iPhone**. Supabase production đã nâng 0006/0007, ba Functions và trigger đánh thức worker; giữ Cron cũ. PWA đã xuất bản trên GitHub Pages, bộ VAPID đã cấu hình; API config xác nhận configured=true. Repository hiện tại `thuyan1510/gia-dinh-an-nam`. Hướng dẫn triển khai: [WEB_PUSH_SETUP.md](WEB_PUSH_SETUP.md).
 
 ## Kiến trúc đã kiểm tra
 
@@ -21,7 +21,7 @@ Cập nhật 12/10/2026. **Chưa nghiệm thu Web Push trên iPhone**. Supabase 
 
 ## Ràng buộc triển khai
 
-- Domain PWA cấu hình bằng biến môi trường, không hardcode. Đang chờ lựa chọn hosting của chủ ứng dụng.
+- Domain PWA cấu hình bằng biến môi trường, không hardcode. Production: `https://thuyan1510.github.io/gia-dinh-an-nam/`; giữ URL ổn định khi cập nhật.
 - Giữ bản sửa cấu hình Telegram đang chạy trên Supabase; không ghi đè bot token, webhook hoặc Cron.
 - Không tự gửi tin thử đến gia đình. Nút kiểm thử sẽ do người dùng chủ động nhấn.
 - Không tự tắt Telegram; mặc định giữ song song khi liên kết sẵn, người dùng có thể chọn dự phòng. Chính sách phải hiển thị rõ khả năng trùng khi bật nhiều kênh.
