@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#7771BC" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'none'"
+    />
+    <title>Gia Đình An Nam · Thông báo</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="./icons/icon-192.png" alt="" width="64" height="64" />
+        <div>
+          <h1>Gia Đình An Nam</h1>
+          <p>Thông báo của gia đình</p>
+        </div>
+      </header>
+      <p id="message" role="status" aria-live="polite">Đang kiểm tra…</p>
+      <section id="open-panel" hidden>
+        <h2 id="open-title">Đang mở Gia Đình An Nam…</h2>
+        <p>
+          iOS có thể yêu cầu bạn chạm thêm một lần. Nếu IPA chưa cài, bạn vẫn có
+          thể xem nội dung bên dưới.
+        </p>
+        <a
+          id="open-native"
+          class="button"
+          href="giadinhanam://notifications/inbox"
+          >Mở Gia Đình An Nam</a
+        ><button id="show-content" class="secondary">
+          Xem nội dung tại đây
+        </button>
+        <div id="content"></div>
+        <button id="dismiss" class="secondary">Về quản lý thông báo</button>
+      </section>
+      <div id="setup">
+        <section id="install">
+          <h2>1. Thêm vào Màn hình chính</h2>
+          <p>
+            Mở trang này bằng Safari → Chia sẻ → Thêm vào Màn hình chính → bật
+            “Mở dưới dạng ứng dụng web” nếu có. Sau đó mở biểu tượng An Nam vừa
+            thêm.
+          </p>
+          <p>
+            PWA nhận thông báo; IPA là ứng dụng để chăm sóc bé. Bạn cần giữ cả
+            hai.
+          </p>
+        </section>
+        <section id="pair-panel">
+          <h2>2. Ghép với tài khoản trong IPA</h2>
+          <p>
+            Trong IPA: Cài đặt → Thông báo → Tạo mã ghép PWA. Mã chỉ dùng một
+            lần, hết hạn sau 5 phút. Không gửi mã cho người khác.
+          </p>
+          <label
+            >Tên điện thoại<input
+              id="device-label"
+              maxlength="80"
+              value="iPhone của tôi"
+              autocomplete="off" /></label
+          ><label
+            >Mã ghép<input
+              id="pair-code"
+              maxlength="24"
+              autocomplete="off"
+              autocapitalize="none"
+              spellcheck="false" /></label
+          ><button id="pair">Ghép thiết bị</button>
+        </section>
+        <section id="push-panel">
+          <h2>3. Bật thông báo</h2>
+          <p id="status">Chưa kiểm tra quyền.</p>
+          <button id="subscribe" disabled>Cho phép và bật Web Push</button
+          ><button id="test" class="secondary" disabled>
+            Gửi thông báo thử đến máy này</button
+          ><button id="confirm" class="secondary" disabled>
+            Tôi đã nhận được thông báo thử</button
+          ><button id="unsubscribe" class="secondary" disabled>
+            Tắt Web Push trên máy này
+          </button>
+          <p id="device-status"></p>
+          <button id="unpair" class="secondary">
+            Ghép lại với tài khoản khác / mã mới
+          </button>
+        </section>
+        <section>
+          <h2>Thông báo gần đây</h2>
+          <button id="refresh" class="secondary">Tải lại</button>
+          <div id="inbox"></div>
+        </section>
+      </div>
+      <footer>
+        Thông báo có thể bị ảnh hưởng bởi mạng, quyền iOS và chế độ Tập trung.
+        Báo cần hỗ trợ không thay thế cuộc gọi khẩn cấp.
+      </footer>
+    </main>
+    <script src="./protocol.js"></script>
+    <script src="./store.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

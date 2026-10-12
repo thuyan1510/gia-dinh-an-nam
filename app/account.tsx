@@ -1,7 +1,7 @@
 import { FormInput as TextInput } from "../src/components/FormInput";
 import { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { Card, LinkButton, PrimaryButton, Screen } from "../src/components/ui";
 import { formStyles as s } from "../src/components/forms";
@@ -9,8 +9,10 @@ import { supabase } from "../src/lib/supabase";
 import { currentUser } from "../src/services/familySync";
 import { useApp } from "../src/providers/AppProvider";
 import type { User } from "@supabase/supabase-js";
+import { parseNotificationTarget } from "../src/lib/notificationTarget";
 
 export default function AccountScreen() {
+  const pendingNotification = parseNotificationTarget(useLocalSearchParams());
   const { family, syncNow, pendingSyncCount } = useApp();
   const db = useSQLiteContext();
   const [user, setUser] = useState<User | null>(null);
@@ -98,6 +100,11 @@ export default function AccountScreen() {
       setMessage(
         "Email đã được xác nhận. Dùng email này để đăng nhập trên máy mới.",
       );
+      if (pendingNotification)
+        router.dismissTo({
+          pathname: "/notification/open",
+          params: pendingNotification,
+        });
     });
   return (
     <Screen keyboardShouldPersistTaps="handled">
@@ -197,9 +204,13 @@ export default function AccountScreen() {
       <Card style={s.gap}>
         <Text style={s.label}>Thông báo của bạn</Text>
         <Text style={s.hint}>
-          Telegram nhận hoạt động mới; lịch đã đồng bộ được nhắc cục bộ trên
-          iPhone. Đã ngừng dùng token APNs cũ.
+          PWA Web Push và Telegram nhận hoạt động mới; lịch đã đồng bộ được nhắc
+          cục bộ trên iPhone. Không cần native APNs cho PWA.
         </Text>
+        <LinkButton
+          title="Thiết lập Web Push và thiết bị"
+          onPress={() => router.push("/notifications")}
+        />
         <LinkButton
           title="Quản lý Telegram"
           onPress={() => router.push("/family/telegram")}

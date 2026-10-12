@@ -1,5 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+import { PregnancyHero } from "../../src/components/PregnancyHero";
 import { useSQLiteContext } from "expo-sqlite";
 import { activatePregnancyReminders } from "../../src/services/pregnancyNotifications";
 import {
@@ -17,6 +17,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { Screen } from "../../src/components/ui";
 import { localDay } from "../../src/components/DayPicker";
@@ -27,7 +28,6 @@ import {
   PregnancyArticleRow,
   openPregnancyArticle,
   p,
-  pregnancyColors,
 } from "../../src/components/PregnancyContent";
 import {
   pregnancyArticles,
@@ -51,6 +51,7 @@ export default function PregnancyToday() {
 function PregnancyDashboard() {
   const { child } = useApp();
   const db = useSQLiteContext();
+  const { width } = useWindowDimensions();
   const [reminderError, setReminderError] = useState("");
   useEffect(() => {
     if (child?.id && child.due_date && !child.birthday) {
@@ -69,8 +70,8 @@ function PregnancyDashboard() {
   const weeksRef = useRef<ScrollView>(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const backgroundColor = scrollY.interpolate({
-    inputRange: [0, 420],
-    outputRange: ["#F1C6AA", "#FFFBF9"],
+    inputRange: [0, 300, 560],
+    outputRange: ["#FFC4A6", "#FFE4D6", "#FFFBF9"],
     extrapolate: "clamp",
   });
   const { entries } = useCareHistory();
@@ -164,19 +165,28 @@ function PregnancyDashboard() {
       >
         <Stack.Screen
           options={{
-            title: "Trạng thái hôm nay",
-            headerStyle: { backgroundColor: "#FFF8F2" },
-            headerBackground: () => (
-              <Animated.View style={{ flex: 1, backgroundColor }} />
-            ),
-            headerTintColor: pregnancyColors.ink,
-            headerTitleStyle: { fontSize: 18, fontWeight: "600" },
+            headerShown: false,
           }}
         />
         <View style={s.hero}>
           <View style={s.topline}>
-            <View style={{ flex: 1 }}>
-              <Text testID="pregnancy-profile" style={p.heading}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Về tab Em bé"
+              onPress={() =>
+                router.canGoBack() ? router.back() : router.replace("/em-be")
+              }
+              style={s.back}
+            >
+              <Ionicons name="chevron-back" size={24} color="#5E382B" />
+            </Pressable>
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <Text style={s.eyebrow}>TRẠNG THÁI HÔM NAY</Text>
+              <Text
+                testID="pregnancy-profile"
+                style={s.profile}
+                numberOfLines={1}
+              >
                 {child.nickname || child.name}
               </Text>
             </View>
@@ -189,7 +199,7 @@ function PregnancyDashboard() {
               <Ionicons
                 name="notifications-outline"
                 size={24}
-                color="#8D534C"
+                color="#5E382B"
               />
             </Pressable>
           </View>
@@ -197,38 +207,24 @@ function PregnancyDashboard() {
           <PregnancyWeekStrip
             day={day}
             today={today}
+            recordedDays={entries
+              .filter((e) => e.details?.tool === "pregnancy-today")
+              .map((e) => e.details?.day ?? "")}
             onChange={(value) => {
               setDay(value);
               setPreview(null);
             }}
           />
-          <View style={s.age}>
-            <Text style={s.ageTitle}>
-              {age ? formatPregnancyAge(age) : "Ngoài khoảng dữ liệu 0–42 tuần"}
-            </Text>
-            <Text style={s.ageSubtitle}>
-              {day === today
-                ? "Tuổi thai hôm nay"
-                : "Tuổi thai tại ngày đã chọn"}
-              {age
-                ? age.daysUntilDue >= 0
-                  ? ` · Còn ${age.daysUntilDue} ngày đến ngày dự sinh`
-                  : ` · Sau ngày dự sinh ${-age.daysUntilDue} ngày`
-                : ""}
-            </Text>
-          </View>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`Xem sự phát triển đủ ${week} tuần`}
             onPress={() => growth && openPregnancyArticle(growth.id)}
-            style={s.heroImage}
+            style={[s.heroImage, { height: Math.min(width * 0.65, 270) }]}
           >
             {visualId && (
-              <Animated.Image
+              <Animated.View
                 testID={`pregnancy-visual-${visualId}`}
-                source={pregnancyVisualSources[visualId]}
                 accessibilityLabel={`Minh họa bé ở ${week} tuần`}
-                resizeMode="contain"
                 style={[
                   StyleSheet.absoluteFill,
                   {
@@ -238,47 +234,48 @@ function PregnancyDashboard() {
                       {
                         translateY: scrollY.interpolate({
                           inputRange: [0, 400],
-                          outputRange: [0, 24],
+                          outputRange: [0, 12],
                           extrapolate: "clamp",
                         }),
                       },
                     ],
                   },
                 ]}
-              />
+              >
+                <PregnancyHero
+                  source={pregnancyVisualSources[visualId]!}
+                  week={week}
+                />
+              </Animated.View>
             )}
-            <LinearGradient
-              pointerEvents="none"
-              colors={["#F1C6AA", "#F1C6AA00"]}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 36,
-              }}
-            />
-            <LinearGradient
-              pointerEvents="none"
-              colors={["#F1C6AA00", "#F1C6AA"]}
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 36,
-              }}
-            />
           </Pressable>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Chọn tuần thai"
             onPress={() => setShowWeeks((v) => !v)}
-            style={{ paddingVertical: 8 }}
+            style={s.age}
           >
-            <Text style={s.caption}>
-              Minh họa đủ {week} tuần · Đổi tuần {showWeeks ? "⌃" : "⌄"}
-            </Text>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 7 }}
+            >
+              <Text style={s.ageTitle}>
+                {preview !== null
+                  ? `${week} tuần · xem trước`
+                  : age
+                    ? formatPregnancyAge(age)
+                    : "Chưa xác định tuổi thai"}
+              </Text>
+              <Ionicons
+                name="information-circle-outline"
+                size={21}
+                color="#A65521"
+              />
+            </View>
+            {showWeeks && (
+              <Text style={s.ageSubtitle}>
+                Ước tính từ ngày dự sinh · Chọn tuần để đọc trước
+              </Text>
+            )}
           </Pressable>
           {showWeeks && (
             <ScrollView
@@ -332,7 +329,7 @@ function PregnancyDashboard() {
               [
                 [
                   "Chi tiết",
-                  "baby-face-outline",
+                  "baby",
                   () => growth && openPregnancyArticle(growth.id),
                 ],
                 ["Triệu chứng", "plus", () => diary("symptoms")],
@@ -348,12 +345,12 @@ function PregnancyDashboard() {
                 <View
                   style={[
                     s.quickIcon,
-                    i === 0 && { backgroundColor: "#E66E8D" },
+                    i === 0 && { backgroundColor: "#FC568A" },
                   ]}
                 >
                   <MaterialCommunityIcons
                     name={icon}
-                    size={26}
+                    size={29}
                     color={i === 0 ? "#fff" : "#46363D"}
                   />
                 </View>
@@ -364,7 +361,9 @@ function PregnancyDashboard() {
         </View>
         <View style={s.section}>
           <View style={s.sectionHeading}>
-            <Text style={[p.heading, { flex: 1 }]}>Thông tin hằng ngày</Text>
+            <Text style={[s.sectionTitle, { flex: 1 }]}>
+              Thông tin hằng ngày
+            </Text>
             <Text style={p.muted}>
               {preview !== null
                 ? `Đủ ${week} tuần`
@@ -397,15 +396,11 @@ function PregnancyDashboard() {
                     },
                   ]}
                 >
-                  <Text style={s.storyCategory}>
-                    {
-                      {
-                        growth: "BÉ LỚN MỖI NGÀY",
-                        body: "CƠ THỂ CỦA MẸ",
-                        inside: "BÉ TRONG BỤNG",
-                      }[article.section]
-                    }
-                  </Text>
+                  <View style={s.storyHeading}>
+                    <Text style={s.storyTitle} numberOfLines={3}>
+                      {article.title}
+                    </Text>
+                  </View>
                   {article.images[0] ? (
                     <Image
                       source={pregnancyImageSources[article.images[0]]}
@@ -420,9 +415,6 @@ function PregnancyDashboard() {
                       style={{ alignSelf: "center", marginVertical: 16 }}
                     />
                   )}
-                  <Text style={s.storyTitle} numberOfLines={3}>
-                    {article.title}
-                  </Text>
                 </Pressable>
               ))}
           </ScrollView>
@@ -523,23 +515,35 @@ function PregnancyDashboard() {
   );
 }
 const s = StyleSheet.create({
-  hero: { padding: 18, paddingBottom: 20 },
+  hero: { paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10 },
   topline: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 6,
+    height: 48,
     gap: 10,
   },
   eyebrow: {
-    color: "#9A7667",
-    fontSize: 10,
+    color: "#86563E",
+    fontSize: 9,
     fontWeight: "700",
     letterSpacing: 1.3,
-    marginBottom: 5,
+    marginBottom: 3,
   },
-  bell: { padding: 8, backgroundColor: "#FFFFFF99", borderRadius: 26 },
-  age: { alignItems: "center", gap: 7, marginTop: 14 },
-  ageTitle: { fontSize: 23, fontWeight: "700", color: "#96583F" },
+  profile: { fontSize: 16, fontWeight: "600", color: "#5E382B" },
+  back: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bell: { padding: 10, borderRadius: 26 },
+  age: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    minHeight: 46,
+  },
+  ageTitle: { fontSize: 24, fontWeight: "700", color: "#A65521" },
   ageSubtitle: {
     fontSize: 12,
     color: "#9C766A",
@@ -547,9 +551,8 @@ const s = StyleSheet.create({
     lineHeight: 18,
   },
   heroImage: {
-    marginTop: 12,
-    marginHorizontal: -18,
-    aspectRatio: 1,
+    marginTop: 0,
+    width: "100%",
     overflow: "hidden",
   },
   caption: {
@@ -567,26 +570,28 @@ const s = StyleSheet.create({
     borderRadius: 22,
   },
   weekText: { fontSize: 14, color: "#AA7966" },
-  quick: { flexDirection: "row", gap: 6, marginTop: 8 },
+  quick: { flexDirection: "row", gap: 6, marginTop: 18, marginBottom: 6 },
   quickButton: { flex: 1, alignItems: "center", gap: 8 },
   quickIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
-  quickText: { fontSize: 12, color: "#685050", textAlign: "center" },
-  section: { padding: 18, gap: 14 },
+  quickText: { fontSize: 13, color: "#372820", textAlign: "center" },
+  section: { padding: 16, paddingTop: 4, gap: 10 },
+  sectionTitle: { fontSize: 19, color: "#302421", fontWeight: "700" },
   sectionHeading: { flexDirection: "row", alignItems: "center", gap: 8 },
   story: {
-    width: 148,
-    padding: 12,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "#EFCACB",
-    minHeight: 200,
+    width: 124,
+    padding: 3,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "#F27998",
+    overflow: "hidden",
+    height: 156,
   },
   storyCategory: {
     fontSize: 9,
@@ -596,16 +601,18 @@ const s = StyleSheet.create({
   },
   storyImage: {
     width: "100%",
-    height: 95,
-    marginVertical: 9,
-    borderRadius: 12,
+    flex: 1,
+    backgroundColor: "#fff",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   storyTitle: {
-    fontSize: 13,
-    lineHeight: 18,
-    color: "#543D42",
+    fontSize: 12,
+    lineHeight: 15,
+    color: "#34272B",
     fontWeight: "600",
   },
+  storyHeading: { height: 57, padding: 6, flexShrink: 0 },
   panel: { marginHorizontal: 18, marginBottom: 16 },
   category: { flex: 1, alignItems: "center", paddingVertical: 14, gap: 10 },
   categoryTitle: {

@@ -7,16 +7,18 @@ export function PregnancyWeekStrip({
   day,
   today,
   onChange,
+  recordedDays = [],
 }: {
   day: string;
   today: string;
   onChange: (value: string) => void;
+  recordedDays?: string[];
 }) {
   const days = pregnancyWeekDays(day);
   const labels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
   const date = new Date(`${day}T12:00:00`);
   return (
-    <View style={{ gap: 12 }}>
+    <View style={{ gap: 4 }}>
       <View style={s.heading}>
         <Pressable
           accessibilityLabel="Tuần trước"
@@ -26,7 +28,7 @@ export function PregnancyWeekStrip({
           <Ionicons name="chevron-back" size={20} color="#663D31" />
         </Pressable>
         <Text style={s.month}>
-          Tháng {date.getMonth() + 1}, {date.getFullYear()}
+          {date.getDate()} tháng {date.getMonth() + 1}
         </Text>
         <Pressable
           accessibilityLabel="Về hôm nay"
@@ -55,7 +57,9 @@ export function PregnancyWeekStrip({
             onPress={() => onChange(value)}
             style={s.day}
           >
-            <Text style={s.label}>{labels[i]}</Text>
+            <Text style={[s.label, value === today && s.todayLabel]}>
+              {value === today ? "HÔM NAY" : labels[i]}
+            </Text>
             <View style={[s.number, value === day && s.selected]}>
               <Text
                 style={[
@@ -66,7 +70,9 @@ export function PregnancyWeekStrip({
                 {Number(value.slice(8))}
               </Text>
             </View>
-            <View style={[s.dot, { opacity: value === today ? 1 : 0 }]} />
+            <View
+              style={[s.dot, { opacity: recordedDays.includes(value) ? 1 : 0 }]}
+            />
           </Pressable>
         ))}
       </View>
@@ -81,20 +87,21 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  month: { flex: 1, fontSize: 14, fontWeight: "600", color: "#663D31" },
+  month: { flex: 1, fontSize: 18, fontWeight: "500", color: "#36231D" },
   today: { padding: 10 },
   todayText: { fontSize: 12, fontWeight: "600", color: "#7D4B3C" },
   row: { flexDirection: "row" },
   day: { flex: 1, alignItems: "center", gap: 5 },
-  label: { fontSize: 11, color: "#7D5342", fontWeight: "600" },
+  label: { fontSize: 10, color: "#895435", fontWeight: "500", minHeight: 16 },
+  todayLabel: { color: "#32211B", fontWeight: "700", fontSize: 9 },
   number: {
-    width: 37,
-    height: 37,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 19,
+    borderRadius: 22,
   },
   selected: { backgroundColor: "#FFFDF9" },
-  text: { color: "#663D31", fontSize: 16 },
+  text: { color: "#9C542C", fontSize: 20 },
   dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: "#A9523D" },
 });

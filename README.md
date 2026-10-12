@@ -1,5 +1,9 @@
 # Gia Đình An Nam
 
+**0.8.0 (build 10)** làm lại Trạng thái hôm nay: ảnh thai nhi trong suốt đóng gói sẵn, bỏ header che nội dung, tuổi thai dưới ảnh, dải tuần và nút nhanh gọn hơn. Thêm mã PWA Web Push + mở đúng bản ghi trong IPA, quản lý từng thiết bị và Telegram dự phòng; giữ nhắc cục bộ. **Chưa triển khai production/kiểm chứng nhận trên iPhone** vì còn chờ Supabase CLI và chọn hosting. Xem [thay đổi & kiểm thử](docs/WEB_PUSH_IMPLEMENTATION.md) và [hướng dẫn triển khai, ghép hai máy](docs/WEB_PUSH_SETUP.md). Chỉ cài IPA không tự hoàn thành phần máy chủ/PWA.
+
+Các mục dưới đây là lịch sử các bản trước.
+
 **0.7.1 (build 9)** thay ảnh đầu trang bằng **40 ảnh thai kỳ** trong response `request(7).txt`, tải sẵn trong IPA (không lưu header/token). 43 mốc tuần được nối qua mã bài, không lấy số thứ tự làm tuổi thai; mốc đủ 40–42 tuần dùng ảnh `week_40` theo đúng dữ liệu nguồn. Nền tông ấm chuyển sáng khi cuộn, ảnh chuyển nhẹ; chọn trực tiếp ngày trong dải thứ Hai–Chủ nhật, có tuần trước/sau và về hôm nay. Bỏ mục Tình dục. 76 ảnh bài viết vẫn giữ nguyên trong thư viện.
 
 Nhắc điền trạng thái mặc định **07:00 và 17:30**, dùng hai lịch **lặp hằng ngày của iOS**, không hết sau vài ngày đóng app; lần chiều vẫn còn nếu đã ghi sáng. Hồ sơ chưa có tùy chọn được bật mặc định khi iOS đã cho phép thông báo; mở màn hình thai kỳ để cấp quyền nếu cần. Các tùy chọn đã lưu (kể cả tắt nhắc hoặc giờ riêng) được giữ; dùng **chuông → Dùng giờ mặc định 07:00 và 17:30 → Lưu** để đổi. Chạm lời nhắc lặp mở ngày hiện tại, không mở ngày cũ khi đặt lịch. Bài đọc theo tuổi thai vẫn dùng lịch hữu hạn; tổng ngân sách là 12 mục. Máy cần mở app/đồng bộ để hủy nhắc sau khi báo đã sinh, đổi gia đình hoặc tắt nhắc từ hồ sơ đó. Thông báo cục bộ không cần máy chủ Telegram; vẫn chịu cài đặt Focus/quyền thông báo của iOS.

@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.117.3";
 import { digest, processTelegram } from "../_shared/telegram.ts";
+import { telegramConfig } from "../_shared/telegramConfig.ts";
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -51,16 +52,16 @@ Deno.serve(async (req) => {
         .order("created_at", { ascending: false })
         .limit(10);
       check(je);
-      return reply({ link, jobs });
+      const config = telegramConfig((name) => Deno.env.get(name));
+      return reply({ link, jobs, configuration: {
+        ready: config.ready, errors: config.errors,
+      } });
     }
     if (input.action === "start") {
-      const username = Deno.env.get("TELEGRAM_BOT_USERNAME");
-      if (
-        !username ||
-        !/^[a-zA-Z0-9_]+$/.test(username) ||
-        !Deno.env.get("TELEGRAM_BOT_TOKEN")
-      )
-        return reply({ error: "Chưa cấu hình bot trên Supabase." }, 503);
+      const config = telegramConfig((name) => Deno.env.get(name));
+      if (!config.ready)
+        return reply({ error: `${config.errors.join(" ")} Kiểm tra Edge Functions → Secrets trong đúng project của app (không phải Vault).` }, 503);
+      const username = config.username;
       const bytes = crypto.getRandomValues(new Uint8Array(24));
       const code = Array.from(bytes, (b) =>
         b.toString(16).padStart(2, "0"),

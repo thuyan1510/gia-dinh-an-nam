@@ -80,6 +80,17 @@ jobs:
             echo "::error::Bundle ID không đúng: $bundle_id"
             exit 1
           fi
+          # Verify the actual archived plist, not only Expo's source configuration.
+          python3 - "$RUNNER_TEMP/GiaDinhAnNam-Info.plist" <<'PY'
+          import plistlib, sys
+          with open(sys.argv[1], 'rb') as stream:
+              info = plistlib.load(stream)
+          schemes = {scheme for item in info.get('CFBundleURLTypes', []) for scheme in item.get('CFBundleURLSchemes', [])}
+          missing = {'giadinhannam', 'giadinhanam'} - schemes
+          if missing:
+              raise SystemExit('Missing native notification URL schemes: ' + ', '.join(sorted(missing)))
+          print('Verified legacy and notification URL schemes in IPA')
+          PY
           widget_info=$(unzip -Z1 "$ipa" | grep -E -m 1 '^Payload/[^/]+\.app/PlugIns/AnNamWidgets\.appex/Info\.plist$' || true)
           if [[ -z "$widget_info" ]]; then
             echo "::error::IPA thiếu phần mở rộng AnNamWidgets.appex"

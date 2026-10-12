@@ -1,0 +1,307 @@
+{
+  "source": "3D-baby-20210922_2",
+  "rendering": "Neutral model; original geometry and UV textures; static transparent render (not Flo's native Filament shader).",
+  "weeks": [
+    {
+      "completedWeek": 0,
+      "sceneId": "0",
+      "sourceModel": "models/week00.glb",
+      "file": "week-00.png",
+      "sha256": "013c51987900c595dc1a5a7e6695db258999ac52a1ab4f992d8eb045862da7dd"
+    },
+    {
+      "completedWeek": 1,
+      "sceneId": "1",
+      "sourceModel": "models/week01.glb",
+      "file": "week-01.png",
+      "sha256": "660e2a34aedde24c5c474951da70c4458a5ed1dd8c178ec55061521aadb4fdde"
+    },
+    {
+      "completedWeek": 2,
+      "sceneId": "2",
+      "sourceModel": "models/week02.glb",
+      "file": "week-02.png",
+      "sha256": "0ece53571151944dcd3eb83d8d94f6c5591d9e79b3833210e9dd75acefc637aa"
+    },
+    {
+      "completedWeek": 3,
+      "sceneId": "3",
+      "sourceModel": "models/week03.glb",
+      "file": "week-03.png",
+      "sha256": "ff29174408e15c5b01fc194098dfcc5566d13162f04f7e5f2ae2b1d934000bdd"
+    },
+    {
+      "completedWeek": 4,
+      "sceneId": "4",
+      "sourceModel": "models/week04.glb",
+      "file": "week-04.png",
+      "sha256": "02e17dea35324ce3252b9a473349f76053f16ccacbf05c8a9258a5566d2630da"
+    },
+    {
+      "completedWeek": 5,
+      "sceneId": "5",
+      "sourceModel": "models/week05.glb",
+      "file": "week-05.png",
+      "sha256": "372f1ef93bf9269ec4918349323e7eaf82b0efce21e0eeaf9cc91f7ac61db167"
+    },
+    {
+      "completedWeek": 6,
+      "sceneId": "6",
+      "sourceModel": "models/week06.glb",
+      "file": "week-06.png",
+      "sha256": "b2ab688eed63a284dbd06bb3e4a056eeefe9c107a83b3dc89af62e61140193e1"
+    },
+    {
+      "completedWeek": 7,
+      "sceneId": "7",
+      "sourceModel": "models/week07.glb",
+      "file": "week-07.png",
+      "sha256": "382f2f0906c16cb5114e27469760c7757c4b3bf8a04263cf774a24dc9a29f1b5"
+    },
+    {
+      "completedWeek": 8,
+      "sceneId": "8",
+      "sourceModel": "models/week08.glb",
+      "file": "week-08.png",
+      "sha256": "0c9b8c00c414c0910fdeef9212d0bf9bd38206a72477d3bae71f7a02796f7b9a"
+    },
+    {
+      "completedWeek": 9,
+      "sceneId": "9",
+      "sourceModel": "models/week09.glb",
+      "file": "week-09.png",
+      "sha256": "6c392d05d40a925de98f96844a08d774062736e2cbed85ec14b000e284e37314"
+    },
+    {
+      "completedWeek": 10,
+      "sceneId": "10",
+      "sourceModel": "models/week10.glb",
+      "file": "week-10.png",
+      "sha256": "481bc3787a56f5938dd744f02677ed8cd025e494fe6a55294159fc1dde444b71"
+    },
+    {
+      "completedWeek": 11,
+      "sceneId": "11",
+      "sourceModel": "models/week11.glb",
+      "file": "week-11.png",
+      "sha256": "4261f49bc9cdfb22858273de0be5a4582fb392bb21edb4a850f39ba0ac7d7a95"
+    },
+    {
+      "completedWeek": 12,
+      "sceneId": "12",
+      "sourceModel": "models/week12.glb",
+      "file": "week-12.png",
+      "sha256": "6d9edefd5efbc46f626aa99924637f812883d80c4d6ecee16f47e4f33409c8fd"
+    },
+    {
+      "completedWeek": 13,
+      "sceneId": "13",
+      "sourceModel": "models/week13.glb",
+      "file": "week-13.png",
+      "sha256": "ed574fd3491592b1db23bb7ed713ada5a94b4bcdf187dd961bfdaa60f38d612e"
+    },
+    {
+      "completedWeek": 14,
+      "sceneId": "14",
+      "sourceModel": "models/week14.glb",
+      "file": "week-14.png",
+      "sha256": "c84470725b776b6650b59914c2bbbff3df2b3e07573af47e12780bbb6fd114cf"
+    },
+    {
+      "completedWeek": 15,
+      "sceneId": "15",
+      "sourceModel": "models/week15.glb",
+      "file": "week-15.png",
+      "sha256": "d64314842fcf6bee7b833d098cc1781f456584c9bf6e52e54c1fc54302eefaa0"
+    },
+    {
+      "completedWeek": 16,
+      "sceneId": "16",
+      "sourceModel": "models/week16.glb",
+      "file": "week-16.png",
+      "sha256": "8b154863c293ea06a611120946b1e147542d880d89582c0c07b7f23dae12991d"
+    },
+    {
+      "completedWeek": 17,
+      "sceneId": "17",
+      "sourceModel": "models/week17.glb",
+      "file": "week-17.png",
+      "sha256": "99dfc5e201a3609dec647f2c45baee70fcfc8501f483cf418343e86c2000c254"
+    },
+    {
+      "completedWeek": 18,
+      "sceneId": "18",
+      "sourceModel": "models/week18.glb",
+      "file": "week-18.png",
+      "sha256": "8e212286bad35c4a721b95cd0de437553c7b5a2e28634a2661f2e0d8152ebd6d"
+    },
+    {
+      "completedWeek": 19,
+      "sceneId": "19",
+      "sourceModel": "models/week19.glb",
+      "file": "week-19.png",
+      "sha256": "80e7dfc073bacabf3c02c838ae5893f969adea10b7a7368b509798a90617ae4a"
+    },
+    {
+      "completedWeek": 20,
+      "sceneId": "20",
+      "sourceModel": "models/week20.glb",
+      "file": "week-20.png",
+      "sha256": "0871e964d64db0d8774dc445fbeb6b7c11518734f79d082b472cf3a7eb7c0867"
+    },
+    {
+      "completedWeek": 21,
+      "sceneId": "21",
+      "sourceModel": "models/week21.glb",
+      "file": "week-21.png",
+      "sha256": "e058bb47911ecc14a5d1fe648ea514114f7cbb26ea171e738830c15597b62b46"
+    },
+    {
+      "completedWeek": 22,
+      "sceneId": "22",
+      "sourceModel": "models/week22.glb",
+      "file": "week-22.png",
+      "sha256": "6058d2fe3f8ccfdeccc88159f3b4c5162aac0999240e6708d3cbc7f7ea7520da"
+    },
+    {
+      "completedWeek": 23,
+      "sceneId": "23",
+      "sourceModel": "models/week23.glb",
+      "file": "week-23.png",
+      "sha256": "72bfb9352686d0fdb691d9366e5303dd793156063e848cf48cf4b5d82ffa5383"
+    },
+    {
+      "completedWeek": 24,
+      "sceneId": "24",
+      "sourceModel": "models/week24.glb",
+      "file": "week-24.png",
+      "sha256": "4518cf6b1b90a45a4fe9210732b52a50bbb648d74d3a81fc68008e344a501a0f"
+    },
+    {
+      "completedWeek": 25,
+      "sceneId": "25",
+      "sourceModel": "models/week25.glb",
+      "file": "week-25.png",
+      "sha256": "59f2de4e0389b5784c36e8249167bd59254927989cd9c91e515dd3a05ee65cfd"
+    },
+    {
+      "completedWeek": 26,
+      "sceneId": "26",
+      "sourceModel": "models/week26.glb",
+      "file": "week-26.png",
+      "sha256": "9c835a280d26ac0345c4652957fd344a61dec4fd650fb710fc0084530751708c"
+    },
+    {
+      "completedWeek": 27,
+      "sceneId": "27",
+      "sourceModel": "models/week27.glb",
+      "file": "week-27.png",
+      "sha256": "be4e9274b908b000bba06f8d32e9812c423bc76f5ffeaa4f6a9fa19eec7a8ae4"
+    },
+    {
+      "completedWeek": 28,
+      "sceneId": "28",
+      "sourceModel": "models/week28.glb",
+      "file": "week-28.png",
+      "sha256": "a222274ce29e10dd9dafe9d88d2fed391059b8fe4e9f74f6a2c1ee13a607294c"
+    },
+    {
+      "completedWeek": 29,
+      "sceneId": "29",
+      "sourceModel": "models/week29.glb",
+      "file": "week-29.png",
+      "sha256": "f330743f37784bdb9e5def69b3a337c6c167c92603ce37d7b0a35e3237ef5deb"
+    },
+    {
+      "completedWeek": 30,
+      "sceneId": "30",
+      "sourceModel": "models/week30.glb",
+      "file": "week-30.png",
+      "sha256": "5f9a9e705605edea7557581e2fc8d5349b1b50b124fbee7417dd54a4e61937bb"
+    },
+    {
+      "completedWeek": 31,
+      "sceneId": "31",
+      "sourceModel": "models/week31.glb",
+      "file": "week-31.png",
+      "sha256": "6dbb7edcb6d3c2ee5cfa562a0444ec5c365a95d1c8e7aaf3a07d8eb4acd70e3e"
+    },
+    {
+      "completedWeek": 32,
+      "sceneId": "32",
+      "sourceModel": "models/week32.glb",
+      "file": "week-32.png",
+      "sha256": "266af2d169d76c206349163490b6d5ef533a1074531b328abfbc60f908c1b7d9"
+    },
+    {
+      "completedWeek": 33,
+      "sceneId": "33",
+      "sourceModel": "models/week33.glb",
+      "file": "week-33.png",
+      "sha256": "a8c85b9ec987a5071afedbfa2293b58968509a6ae0396b843a5b653c8a31f387"
+    },
+    {
+      "completedWeek": 34,
+      "sceneId": "34",
+      "sourceModel": "models/week34.glb",
+      "file": "week-34.png",
+      "sha256": "585a68f62acc83eb7462a9cfaf3cb8a29ca1c7ab1712e551cf86484665a7f8d8"
+    },
+    {
+      "completedWeek": 35,
+      "sceneId": "35",
+      "sourceModel": "models/week35.glb",
+      "file": "week-35.png",
+      "sha256": "67212d0681353e07fe26bc1bd2130e53d519047a18d3219014762936de74ebe2"
+    },
+    {
+      "completedWeek": 36,
+      "sceneId": "36",
+      "sourceModel": "models/week36.glb",
+      "file": "week-36.png",
+      "sha256": "a56b20655d84a97d0e9609fcc15acfac5776110b44926708457f46a54810e58e"
+    },
+    {
+      "completedWeek": 37,
+      "sceneId": "37",
+      "sourceModel": "models/week37.glb",
+      "file": "week-37.png",
+      "sha256": "dfbdedb1489c149f0ef98fe82951259961a9c00234c5cc081bbf6b97f6c9623a"
+    },
+    {
+      "completedWeek": 38,
+      "sceneId": "38",
+      "sourceModel": "models/week38.glb",
+      "file": "week-38.png",
+      "sha256": "ff76f3979290f409633b2c722c26e00873c3452680611c87ab7fc0cce8e3688d"
+    },
+    {
+      "completedWeek": 39,
+      "sceneId": "39",
+      "sourceModel": "models/week39.glb",
+      "file": "week-39.png",
+      "sha256": "4a117308576c7a6cb765b4b1c8e6c019ae5ac7a375ddda9623b0022b537fc7e6"
+    },
+    {
+      "completedWeek": 40,
+      "sceneId": "40",
+      "sourceModel": "models/week40.glb",
+      "file": "week-40.png",
+      "sha256": "741f2a57e05b7608a5bfb234f4d04e42fb32dcec170f41e015b29c15362c8063"
+    },
+    {
+      "completedWeek": 41,
+      "sceneId": "41",
+      "sourceModel": "models/week41.glb",
+      "file": "week-41.png",
+      "sha256": "f00c803534f6e427b70fbe762a3870386b6b73418ac88be40f6e0c1a597c2165"
+    },
+    {
+      "completedWeek": 42,
+      "sceneId": "42",
+      "sourceModel": "models/week42.glb",
+      "file": "week-42.png",
+      "sha256": "6af1dc0bcb611dff8a50fa97a1c367fd4b4d3d1a9d5411aa9488ee71d2f0dfb0"
+    }
+  ]
+}

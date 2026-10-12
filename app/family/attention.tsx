@@ -9,7 +9,7 @@ import {
 } from "../../src/components/ui";
 import { useApp } from "../../src/providers/AppProvider";
 import { makeId } from "../../src/lib/ids";
-import { telegramAction } from "../../src/services/telegram";
+import { webPushAction } from "../../src/services/webPush";
 
 export default function AttentionScreen() {
   const { syncNow } = useApp();
@@ -23,7 +23,7 @@ export default function AttentionScreen() {
     locked.current = true;
     setBusy(true);
     try {
-      await telegramAction("attention", { request_id: requestId.current });
+      await webPushAction("attention", { request_id: requestId.current });
       setSent(true);
       setMessage(
         "Đã lưu yêu cầu trên máy chủ, chưa có nghĩa người nhà đã nhận. Xem lời nhắc để chờ xác nhận; liên hệ trực tiếp nếu cần gấp.",
@@ -44,13 +44,13 @@ export default function AttentionScreen() {
     <Screen>
       <SectionHeader title="Báo bố/mẹ cần hỗ trợ" />
       <Card>
-        <Text>Gửi tới người còn lại trong gia đình qua Telegram:</Text>
+        <Text>Gửi tới người còn lại qua Web Push / Telegram đã liên kết:</Text>
         <Text style={{ fontSize: 22, fontWeight: "700" }}>
           “Cần bạn hỗ trợ ngay”
         </Text>
         <Text>
           Không gọi điện. Không gửi vị trí hay hồ sơ bé. Cần Internet, người
-          nhận đã liên kết bot và bật thông báo Telegram.
+          nhận đã bật Web Push hoặc liên kết Telegram.
         </Text>
         <Text>
           Đây không phải hệ thống cấp cứu; thông báo có thể bị chậm, tắt tiếng

@@ -2,8 +2,8 @@
   "expo": {
     "name": "Gia Đình An Nam",
     "slug": "gia-dinh-an-nam",
-    "scheme": "giadinhannam",
-    "version": "0.7.1",
+    "scheme": ["giadinhannam", "giadinhanam"],
+    "version": "0.8.0",
     "orientation": "portrait",
     "icon": "./assets/an-nam-icon-v1.png",
     "userInterfaceStyle": "automatic",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "vn.giadinhanam.family",
-      "buildNumber": "9",
+      "buildNumber": "10",
       "infoPlist": {
         "UIBackgroundModes": []
       }
@@ -30,7 +30,14 @@
       "expo-router",
       "expo-sqlite",
       "expo-secure-store",
-      ["expo-image-picker", { "photosPermission": "Chọn ảnh để chia sẻ với gia đình và đặt ảnh cho bé.", "cameraPermission": false, "microphonePermission": false }],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Chọn ảnh để chia sẻ với gia đình và đặt ảnh cho bé.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
       [
         "expo-notifications",
         {

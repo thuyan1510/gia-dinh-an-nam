@@ -89,11 +89,15 @@ export default function SettingsScreen() {
       </Card>
 
       <SectionHeader title="Thông báo" />
+      <PrimaryButton
+        title="Thông báo • PWA Web Push • Thiết bị"
+        onPress={() => router.push("/notifications")}
+      />
       <Card style={styles.gap}>
         <SettingRow
           icon="notifications-outline"
           title="Quyền thông báo"
-          body="Nhắc đã đặt trên iPhone vẫn hoạt động khi mất mạng. Hoạt động từ người nhà nhận qua Telegram."
+          body="Nhắc đã đặt trên iPhone vẫn hoạt động khi mất mạng. Hoạt động từ người nhà nhận qua PWA Web Push và Telegram theo thiết lập."
           status={permission}
         />
         <PrimaryButton

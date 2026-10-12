@@ -5,7 +5,7 @@ export async function telegram(
   method: string,
   payload: Record<string, unknown>,
 ) {
-  const token = Deno.env.get("TELEGRAM_BOT_TOKEN");
+  const token = Deno.env.get("TELEGRAM_BOT_TOKEN")?.trim();
   if (!token) throw new Error("TelegramNotConfigured");
   // Never include this URL/token, Telegram payload or exception text in logs.
   const response = await fetch(

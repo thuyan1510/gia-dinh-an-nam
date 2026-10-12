@@ -68,9 +68,9 @@ async function main() {
     const beforeColor = await bg.evaluate(
       (el) => getComputedStyle(el).backgroundColor,
     );
-    await page
-      .getByText("Thông tin hằng ngày", { exact: true })
-      .scrollIntoViewIfNeeded();
+    // Compact redesign intentionally shows the story strip above the fold.
+    await page.mouse.move(200, 450);
+    await page.mouse.wheel(0, 350);
     await page.waitForTimeout(150);
     assert.notEqual(
       await bg.evaluate((el) => getComputedStyle(el).backgroundColor),
@@ -93,7 +93,7 @@ async function main() {
       .getByText("Điều gì đang diễn ra ở tuần 22?", { exact: true })
       .waitFor();
     assert.ok(
-      (await page.locator("body").innerText()).includes("Tuổi thai hôm nay"),
+      (await page.locator("body").innerText()).includes("22 tuần · xem trước"),
     );
     await page.getByText("Về tuần của ngày đã chọn", { exact: true }).click();
     await page.getByTestId("pregnancy-log").click();

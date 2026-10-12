@@ -33,6 +33,23 @@ function NotificationNavigation() {
       );
       if (response.actionIdentifier === "DONE" && reminder)
         void state.current.completeReminder(reminder).catch(() => undefined);
+      if (
+        response.notification.request.content.data?.reminderId &&
+        typeof response.notification.request.content.data.reminderId ===
+          "string"
+      ) {
+        router.navigate({
+          pathname: "/notification/open",
+          params: {
+            type: "reminder",
+            id: response.notification.request.content.data.reminderId,
+          },
+        });
+        void Notifications.clearLastNotificationResponseAsync().catch(
+          () => undefined,
+        );
+        return;
+      }
       const route = response.notification.request.content.data?.route;
       const data = response.notification.request.content.data;
       if (route === "/pregnancy" && data?.scope === "pregnancy-v1") {
@@ -139,6 +156,15 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="pregnancy/index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="notification/open"
+            dangerouslySingular={() => "notification-detail"}
+            options={{ title: "Thông báo" }}
+          />
           <Stack.Screen
             name="record/new"
             options={{ title: "Ghi nhanh", presentation: "modal" }}
