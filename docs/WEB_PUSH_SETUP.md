@@ -4,7 +4,11 @@
 
 Mã nằm trong bản 0.8.0. **Cài IPA mới chưa tự bật Web Push**: còn cần PWA HTTPS, migration/Functions/Secrets, rồi ghép riêng mỗi máy. Nhắc cục bộ và Telegram cũ tiếp tục dùng được. Không cần VPS chạy thường trực; dùng Supabase và hosting tĩnh.
 
-Phiên CLI môi trường phát triển hiện chưa đăng nhập và chủ ứng dụng chưa chọn hosting; chưa có URL PWA production. Có thể chọn GitHub Pages repository hiện tại hoặc hosting HTTPS riêng. Chỉ shell công khai được upload, không phải dữ liệu gia đình.
+Ngày 12/10/2026 đã đăng nhập và nâng đúng project `gkqlakxrjeflnfnmghma`: áp dụng 0006 + 0007, deploy `webpush-account`, `webpush-device`, `telegram-worker`, chạy `web_push_dispatch.sql`. Cả 5 bảng mới có RLS; giữ duy nhất Cron `an-nam-telegram-minute`. Không cần chạy lại bước 3–4 cho project này. Chưa nghiệm thu nhận thông báo trên iPhone.
+
+Repository mới: [HasiramaTuna/gia-dinh-an-nam](https://github.com/HasiramaTuna/gia-dinh-an-nam). Đã cấu hình hai Actions secrets `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`. Không đổi project Supabase, tài khoản gia đình hoặc bundle ID khi chuyển GitHub.
+
+Hosting PWA và bộ VAPID đang chờ xác nhận địa chỉ xuất bản; cài IPA chưa tự hoàn tất hai mục này. Chỉ shell công khai được upload, không phải dữ liệu gia đình.
 
 ## 1. Đăng nhập Supabase
 
@@ -14,7 +18,7 @@ npx supabase login
 npx supabase projects list
 ```
 
-Project đích: `Gia đình An Nam`, ref `gkqlakxrjeflnfnmghma`. Không gửi access token vào chat hoặc ghi trong repo. Nếu muốn tôi triển khai giúp, báo sau khi CLI đăng nhập thành công và chọn hosting.
+Project đích: `Gia đình An Nam`, ref `gkqlakxrjeflnfnmghma`. Không gửi access token vào chat hoặc ghi trong repo. Phiên CLI hiện đã đăng nhập; các lệnh trên dành cho môi trường mới.
 
 ## 2. Publish PWA HTTPS
 
@@ -79,7 +83,7 @@ Lưu bản khóa trong nơi quản lý bí mật; xóa riêng file tạm sau upl
 
 ## 6. Ghép riêng từng điện thoại
 
-1. Tải IPA 0.8.0 từ **Build IPA for ESign**, ký/cài như trước. Giữ bundle ID; không gỡ app khi chưa chắc dữ liệu đồng bộ và tài khoản có thể khôi phục.
+1. Mở [Build IPA for ESign ở repository mới](https://github.com/HasiramaTuna/gia-dinh-an-nam/actions/workflows/build-unsigned-ios.yml), chọn lượt thành công → Artifacts → `gia-dinh-an-nam-unsigned-ipa`. Giải nén, ký tệp `Gia-Dinh-An-Nam-unsigned.ipa` bằng ESign/cài như trước. Giữ bundle ID `vn.giadinhanam.family`; không gỡ app khi chưa chắc dữ liệu đồng bộ và tài khoản có thể khôi phục. Chứng chỉ và mật khẩu ký không cần đưa lên GitHub.
 2. IPA → **Cài đặt → Thông báo** → mở PWA bằng Safari → Chia sẻ → Thêm vào Màn hình chính.
 3. Mở biểu tượng **An Nam** vừa cài. Tạo mã 5 phút trong IPA, sao chép vào PWA. Đặt tên “iPhone 15” / “iPhone 11”. Không chia sẻ mã với người khác.
 4. Nhấn **Cho phép và bật Web Push**, đồng ý hộp thoại hệ thống.

@@ -1,6 +1,6 @@
 # Bản 0.8.0 (10) — thông báo và màn hình thai kỳ
 
-Cập nhật 12/10/2026. Mã nguồn đã triển khai và kiểm thử cục bộ; **chưa nghiệm thu Web Push trên iPhone**. CLI Supabase hiện báo thiếu access token, hosting HTTPS đang chờ lựa chọn. Hướng dẫn triển khai: [WEB_PUSH_SETUP.md](WEB_PUSH_SETUP.md).
+Cập nhật 12/10/2026. **Chưa nghiệm thu Web Push trên iPhone**. Supabase production đã nâng 0006/0007, ba Functions và trigger đánh thức worker; giữ Cron cũ. Hosting HTTPS/VAPID đang chờ lựa chọn. Repository chuyển sang `HasiramaTuna/gia-dinh-an-nam`. Hướng dẫn triển khai: [WEB_PUSH_SETUP.md](WEB_PUSH_SETUP.md).
 
 ## Kiến trúc đã kiểm tra
 
@@ -62,4 +62,4 @@ Nguồn thật → `notification_events` → delivery Web Push từng máy và T
 - Playwright PWA: không tự xin quyền, pairing fixture, denied, pending target khi cold-root, receipt sau config, nội dung sau auth, offline fallback; không cache API riêng tư hay fake native-open.
 - `scripts/notification_ui_smoke.cjs`: target sai, mục tiêu còn khi chuyển sang tài khoản, lời nhắc local-only mở đúng bản ghi, notification ID từ xa không được đi nhánh local-only. Không lỗi JS. Chi tiết care dùng bộ lọc JSON cũ đã có để không đưa object sai kiểu vào React Native Text.
 
-Chưa xác minh: deploy production mới, nhà cung cấp → hai iPhone, khóa máy/Focus, Safari/PWA/IPA cold và warm start, đăng nhập lại, mất mạng rồi nối lại, IPA chưa cài. Browser smoke không thay thế kiểm tra safe area/bàn phím/native navigation. Theo dõi build 0.8.0 ở GitHub Actions; run 0.7.1 không phải bằng chứng cho bản mới.
+Đã deploy backend mới, kiểm tra 5 bảng RLS và một Cron hoạt động. Chưa xác minh: nhà cung cấp → hai iPhone, khóa máy/Focus, Safari/PWA/IPA cold và warm start, đăng nhập lại, mất mạng rồi nối lại, IPA chưa cài. Browser smoke giả lập ranh giới mở ứng dụng để không mở hộp thoại external protocol của Chromium; không thay thế kiểm tra safe area/bàn phím/native navigation. Theo dõi build 0.8.0 ở GitHub Actions repository mới; run 0.7.1 không phải bằng chứng cho bản mới.

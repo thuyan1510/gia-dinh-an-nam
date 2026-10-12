@@ -142,7 +142,12 @@ self.addEventListener("pushsubscriptionchange", (event) =>
       try {
         const config = await store.get("config"),
           auth = await store.get("auth");
-        if (!config?.publicKey || !auth?.deviceToken) return;
+        if (
+          !config?.publicKey ||
+          !auth?.deviceToken ||
+          (await store.get("pushDisabled"))
+        )
+          return;
         const key = Uint8Array.from(
           atob(config.publicKey.replace(/-/g, "+").replace(/_/g, "/")),
           (c) => c.charCodeAt(0),

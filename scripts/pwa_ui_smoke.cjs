@@ -28,6 +28,19 @@ const server = http.createServer((req, res) => {
       ".png": "image/png",
     }[path.extname(file)] || "application/octet-stream",
   );
+  if (path.basename(file) === "app.js") {
+    // Stub only the OS/native boundary: Chromium's external-protocol dialog
+    // consumes subsequent pointer clicks and cannot validate iOS launching.
+    const source = fs.readFileSync(file, "utf8");
+    assert.ok(source.includes("location.href = P.nativeURL(target);"));
+    res.end(
+      source.replace(
+        "location.href = P.nativeURL(target);",
+        "(window.nativeLaunches ||= []).push(P.nativeURL(target));",
+      ),
+    );
+    return;
+  }
   fs.createReadStream(file).pipe(res);
 });
 (async () => {
@@ -165,17 +178,75 @@ const server = http.createServer((req, res) => {
       return all;
     });
     assert.ok(cached.length > 5);
-    assert.ok(
-      cached.every((url) =>
-        url.startsWith((locationOrigin = "http://127.0.0.1")),
-      ),
-    );
+    assert.ok(cached.every((url) => url.startsWith("http://127.0.0.1")));
     assert.ok(
       !cached.some((url) => url.includes("supabase")),
       "Private API not cached",
     );
     fs.mkdirSync("/tmp/an-nam-pwa-ui", { recursive: true });
     await page.screenshot({ path: "/tmp/an-nam-pwa-ui/open-app.png" });
+    const newer = {
+      ...target,
+      eventId: "r2",
+      notificationId: "10000000-0000-4000-8000-000000000002",
+    };
+    const newest = {
+      ...target,
+      eventId: "r3",
+      notificationId: "10000000-0000-4000-8000-000000000003",
+    };
+    assert.equal(
+      await page.evaluate(
+        async ({ target, newest }) => {
+          await AnNamStore.set("pendingNavigation", newest);
+          const wrong = await AnNamStore.take(
+            "pendingNavigation",
+            target.notificationId,
+          );
+          return (
+            wrong === undefined &&
+            (await AnNamStore.get("pendingNavigation")).notificationId ===
+              newest.notificationId
+          );
+        },
+        { target, newest },
+      ),
+      true,
+      "Old activation must not consume newer click",
+    );
+    await page.evaluate(
+      ({ newer, newest }) => {
+        const get = AnNamStore.get;
+        AnNamStore.get = async (key) => {
+          if (key === `attempt:${newer.notificationId}`)
+            await new Promise((r) => setTimeout(r, 150));
+          return get(key);
+        };
+        const open = (target) =>
+          navigator.serviceWorker.dispatchEvent(
+            new MessageEvent("message", {
+              data: { type: "OPEN_NOTIFICATION", target },
+            }),
+          );
+        open(newer);
+        open(newest);
+      },
+      { newer, newest },
+    );
+    await page.waitForTimeout(300);
+    assert.ok(
+      (await page.locator("#open-native").getAttribute("href")).includes(
+        "id=r3",
+      ),
+    );
+    assert.ok(
+      !calls.some(
+        (c) =>
+          c.stage === "launch_attempted" &&
+          c.notificationId === newer.notificationId,
+      ),
+      "Stale activation cannot launch IPA",
+    );
     await context.setOffline(true);
     await page.goto(
       base +
@@ -187,6 +258,28 @@ const server = http.createServer((req, res) => {
       `giadinhanam://notification/open?type=reminder&id=r1&notificationId=${target.notificationId}`,
     );
     assert.ok(!calls.some((c) => c.stage === "native_opened"));
+    await context.setOffline(false);
+    await page.goto(base);
+    await page
+      .getByText("Sẵn sàng thiết lập thông báo.", { exact: true })
+      .waitFor();
+    await page.evaluate(() => {
+      window.confirm = () => {
+        window.confirmCalled = true;
+        return true;
+      };
+    });
+    await page
+      .locator("#device-status")
+      .filter({ hasText: "iPhone test" })
+      .waitFor();
+    await page.locator("#pair-panel").waitFor({ state: "hidden" });
+    await page.locator("#unpair").click();
+    await page
+      .getByText("Nhập mã mới từ IPA để ghép lại.", { exact: true })
+      .waitFor();
+    assert.equal(await page.evaluate(() => AnNamStore.get("auth")), undefined);
+    assert.equal(await page.locator("#content").textContent(), "");
     assert.deepEqual(errors, []);
     console.log(
       "PASS: PWA manifest/shell install, no automatic permission prompt, pairing, denied permission, cold root target recovery, authenticated content, offline open-app, no private API cache or fake native-open receipt",

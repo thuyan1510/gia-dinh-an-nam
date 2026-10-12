@@ -23,7 +23,7 @@
         tx.onerror = () => reject(tx.error);
       });
     },
-    async take(key) {
+    async take(key, notificationId) {
       const db = await opened;
       return new Promise((resolve, reject) => {
         const tx = db.transaction("state", "readwrite"),
@@ -31,8 +31,14 @@
           request = store.get(key);
         let value;
         request.onsuccess = () => {
-          value = request.result;
-          store.delete(key);
+          // Do not consume a newer click while an older page is still restoring.
+          if (
+            notificationId === undefined ||
+            request.result?.notificationId === notificationId
+          ) {
+            value = request.result;
+            store.delete(key);
+          }
         };
         tx.oncomplete = () => resolve(value);
         tx.onerror = () => reject(tx.error);

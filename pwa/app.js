@@ -17,11 +17,33 @@
     auth = await store.get("auth"),
     current = null,
     registration = null,
-    busy = false;
+    busy = false,
+    targetEpoch = 0;
   const pendingReceipts = new Map();
   const message = (text) => {
     $("message").textContent = text;
   };
+  async function browserPush(promise) {
+    let timer;
+    try {
+      return await Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          timer = setTimeout(
+            () =>
+              reject(
+                new Error(
+                  "Trình duyệt chưa phản hồi trạng thái Push. Hãy thử lại.",
+                ),
+              ),
+            3000,
+          );
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
   async function api(action, values = {}) {
     if (!config?.apiURL) throw new Error("Chưa có cấu hình máy chủ PWA.");
     const response = await fetch(config.apiURL, {
@@ -89,8 +111,13 @@
     $("device-status").textContent =
       `${state.label}. ${state.registered ? "Máy chủ đã lưu subscription (không chứng minh thông báo đã tới máy)." : "Chưa có subscription đang bật."}`;
     // Only sync an existing permission/subscription. Never prompt automatically.
-    const sub = await registration.pushManager.getSubscription();
-    if (sub && standalone && Notification.permission === "granted")
+    const sub = await browserPush(registration.pushManager.getSubscription());
+    if (
+      sub &&
+      standalone &&
+      Notification.permission === "granted" &&
+      !(await store.get("pushDisabled"))
+    )
       await api("register", {
         subscription: sub.toJSON(),
         permission: "granted",
@@ -119,18 +146,23 @@
   async function showTarget(value) {
     const target = P.target(value);
     if (!target || current?.notificationId === target.notificationId) return;
+    const epoch = ++targetEpoch;
     current = target;
     $("open-panel").hidden = false;
     $("setup").hidden = true;
     $("content").textContent = "";
     $("open-native").href = P.nativeURL(target);
     $("open-title").textContent = "Đang mở Gia Đình An Nam…";
-    await store.take("pendingNavigation");
+    await store.take("pendingNavigation", target.notificationId);
+    if (epoch !== targetEpoch) return;
     void receipt("pwa_opened");
     // One attempt per distinct activation, with a persistent guard against root restore loops.
     const attemptKey = `attempt:${target.notificationId}`;
-    if (!(await store.get(attemptKey))) {
+    const attempted = await store.get(attemptKey);
+    if (epoch !== targetEpoch) return;
+    if (!attempted) {
       await store.set(attemptKey, Date.now());
+      if (epoch !== targetEpoch) return;
       location.href = P.nativeURL(target);
       void receipt("launch_attempted");
     }
@@ -149,9 +181,12 @@
         "Ghép PWA với tài khoản trong IPA để xem nội dung riêng tư.",
       );
     }
+    const epoch = targetEpoch,
+      credential = auth.deviceToken;
     const data = await api("content", {
       notificationId: current.notificationId,
     });
+    if (epoch !== targetEpoch || credential !== auth?.deviceToken) return;
     const row = data.record,
       parts = [];
     if (row.title) parts.push(row.title);
@@ -171,7 +206,9 @@
     );
   });
   action("dismiss", async () => {
+    targetEpoch++;
     current = null;
+    $("content").textContent = "";
     $("open-panel").hidden = true;
     $("setup").hidden = false;
     history.replaceState(null, "", base);
@@ -202,7 +239,7 @@
     }
     registration ||= await navigator.serviceWorker.ready;
     const subscription =
-      (await registration.pushManager.getSubscription()) ||
+      (await browserPush(registration.pushManager.getSubscription())) ||
       (await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: bytes(config.publicKey),
@@ -212,6 +249,7 @@
       permission,
       standalone,
     });
+    await store.set("pushDisabled", false);
     message("Đã đăng ký. Chạm Gửi thông báo thử để kiểm tra trên iPhone.");
     await reconcile();
   });
@@ -231,9 +269,20 @@
   });
   action("unsubscribe", async () => {
     await api("unsubscribe");
-    registration ||= await navigator.serviceWorker.ready;
-    await (await registration.pushManager.getSubscription())?.unsubscribe();
-    message("Đã tắt Web Push trên máy này. Các thiết bị khác không đổi.");
+    await store.set("pushDisabled", true);
+    let browserCleared = true;
+    try {
+      registration ||= await navigator.serviceWorker.ready;
+      const sub = await browserPush(registration.pushManager.getSubscription());
+      if (sub) await browserPush(sub.unsubscribe());
+    } catch {
+      browserCleared = false;
+    }
+    message(
+      browserCleared
+        ? "Đã tắt Web Push trên máy này. Các thiết bị khác không đổi."
+        : "Máy chủ đã tắt gửi mới. Chưa gỡ được subscription trong trình duyệt; có thể còn tin đang chờ. Kiểm tra quyền Thông báo của An Nam.",
+    );
     await reconcile();
   });
   action("unpair", async () => {
@@ -251,10 +300,25 @@
         if (!/hết hạn|Ghép lại/.test(e.message)) throw e;
       }
     }
-    const sub = await registration?.pushManager.getSubscription();
-    await sub?.unsubscribe();
+    await store.set("pushDisabled", true);
+    try {
+      const sub = await browserPush(
+        registration?.pushManager.getSubscription(),
+      );
+      if (sub) await browserPush(sub.unsubscribe());
+    } catch {
+      /* Server credential is revoked; still clear all private local state. */
+    }
     await store.take("auth");
     auth = null;
+    targetEpoch++;
+    current = null;
+    pendingReceipts.clear();
+    await store.take("pendingNavigation");
+    $("content").textContent = "";
+    $("inbox").replaceChildren();
+    $("open-panel").hidden = true;
+    history.replaceState(null, "", base);
     $("setup").hidden = false;
     message("Nhập mã mới từ IPA để ghép lại.");
   });

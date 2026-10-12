@@ -70,6 +70,17 @@ const target = {
   type: "reminder",
   eventId: "r_1",
 };
+test("subscription renewal cannot re-enable an opted-out device", async () => {
+  const f = fixture();
+  f.state.set("auth", { deviceToken: "TEST_DEVICE_SECRET" });
+  f.state.set("config", {
+    publicKey: "key",
+    apiURL: "https://example.supabase.co/functions/v1/webpush-device",
+  });
+  f.state.set("pushDisabled", true);
+  await f.dispatch("pushsubscriptionchange", {});
+  assert.equal(f.receipts.length, 0);
+});
 test("push is visibly displayed with a stable tag before acknowledging; payload cannot override title or URLs", async () => {
   const f = fixture();
   f.state.set("auth", { deviceToken: "TEST_DEVICE_SECRET" });
