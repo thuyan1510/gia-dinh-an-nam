@@ -4,7 +4,7 @@
 
 ## Trạng thái
 
-Mã nằm trong bản 0.8.0. **Cài IPA mới chưa tự bật Web Push**: còn cần PWA HTTPS, migration/Functions/Secrets, rồi ghép riêng mỗi máy. Nhắc cục bộ và Telegram cũ tiếp tục dùng được. Không cần VPS chạy thường trực; dùng Supabase và hosting tĩnh.
+Web Push có từ bản 0.8.0; bản 0.9.0 bổ sung thông báo chat. **Cài IPA mới chưa tự bật Web Push**: còn cần PWA HTTPS, migration/Functions/Secrets, rồi ghép riêng mỗi máy. Máy chủ và hosting của project hiện tại đã cấu hình; nhắc cục bộ được giữ, Telegram tạm tắt từ 0.9.0. Không cần VPS chạy thường trực; dùng Supabase và hosting tĩnh.
 
 Ngày 12/10/2026 đã đăng nhập và nâng đúng project `gkqlakxrjeflnfnmghma`: áp dụng 0006 + 0007, deploy `webpush-account`, `webpush-device`, `telegram-worker`, chạy `web_push_dispatch.sql`. Cả 5 bảng mới có RLS; giữ duy nhất Cron `an-nam-telegram-minute`. Không cần chạy lại bước 3–4 cho project này. Chưa nghiệm thu nhận thông báo trên iPhone.
 
@@ -14,7 +14,7 @@ Repository hiện tại: [thuyan1510/gia-dinh-an-nam](https://github.com/thuyan1
 
 ### Build và xuất bản
 
-Mã đã push lên `main` của `thuyan1510`. GitHub đã nhận [lượt build IPA](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38218792661) và [lượt xuất bản PWA](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38218789405). Chỉ tải IPA khi lượt build có kết quả **Success**.
+Ngày 13/10/2026, bản **0.9.0 (11)** đã push lên `main` của `thuyan1510`: [build IPA](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38327598448) và [xuất bản PWA](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38327595577) đều **Success**. Tải IPA từ artifact `gia-dinh-an-nam-unsigned-ipa` trong lượt build này.
 
 Để cập nhật lần sau: push mã → Actions → **Build IPA for ESign** → **Run workflow** → `main`. Khi sửa PWA, chạy thêm **Deploy notification PWA**. Lỗi hạn chế Actions của tài khoản `HasiramaTuna` là lịch sử, không phải trạng thái repository hiện tại.
 
@@ -99,7 +99,7 @@ Lưu bản khóa trong nơi quản lý bí mật; xóa riêng file tạm sau upl
 4. Nhấn **Cho phép và bật Web Push**, đồng ý hộp thoại hệ thống.
 5. Gửi thử. Chỉ nhấn xác nhận đã nhận sau khi **thực sự thấy thông báo**. Đây là xác nhận của người dùng, không phải phép đo tự động.
 6. Lặp lại trên máy kia bằng tài khoản IPA người kia và mã mới; không ghi đè máy thứ nhất.
-7. Ban đầu giữ Telegram song song. Khi cả hai máy nhận ổn, có thể chọn Telegram dự phòng. Không tắt Telegram chỉ vì thấy HTTP accepted.
+7. Bản 0.9.0 đã tạm tắt Telegram theo yêu cầu; không cần cấu hình bot lại. Kiểm tra nhận PWA thật trên cả hai máy, không chỉ trạng thái HTTP accepted. Nếu muốn bật lại Telegram sau này, xem công tắc máy chủ trong [CONVERSATION_0_9.md](./CONVERSATION_0_9.md).
 
 Quyền denied: kiểm tra Cài đặt iPhone → Thông báo → An Nam. Thiếu hỗ trợ: kiểm tra iOS và mở PWA **từ Home Screen**, không chỉ tab Safari. Credential hạn 90 ngày; có thể thu hồi/ghép lại. Mất máy thì thu hồi đúng thiết bị.
 

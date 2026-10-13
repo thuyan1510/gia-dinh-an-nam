@@ -2,9 +2,26 @@
 
 ## Trạng thái triển khai
 
-Ngày 13/10/2026 đã áp dụng migration **0008** lên project `gkqlakxrjeflnfnmghma` và deploy lại `telegram-worker`, `webpush-account`, `webpush-device`. Đã xác minh Telegram tạm tắt, Cron và trigger PWA vẫn còn; dữ liệu gia đình và liên kết Telegram được giữ. Lời nhắc cũ đã được đưa vào chat mà không phát thông báo hàng loạt. IPA/PWA đang chuẩn bị phát hành qua GitHub Actions.
+Ngày 13/10/2026 đã áp dụng migration **0008** lên project `gkqlakxrjeflnfnmghma` và deploy lại `telegram-worker`, `webpush-account`, `webpush-device`. Đã xác minh Telegram tạm tắt, Cron và trigger PWA vẫn còn; dữ liệu gia đình và liên kết Telegram được giữ. Lời nhắc cũ đã được đưa vào chat mà không phát thông báo hàng loạt. **IPA/PWA đã build và xuất bản thành công qua GitHub Actions.**
+
+Tải IPA tại [build 0.9.0 (11)](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38327598448) → Artifacts → `gia-dinh-an-nam-unsigned-ipa`. Các bước Build / Verify IPA package / Upload đều thành công, thời gian job 17 phút 24 giây. IPA chưa ký, cần ký/cài như các bản trước.
+
+Đã tải và kiểm tra IPA thực tế: archive nguyên vẹn, SHA-256 khớp, app và widget đều **0.9.0 / build 11 / iOS tối thiểu 16.4**. Bundle ID app `vn.giadinhanam.family`, widget `vn.giadinhanam.family.widget`; có cả URL schemes `giadinhanam` và `giadinhannam`. SHA-256: `11b9ee321513239c2ea5543001a28b3977fdb3312090f35b3b475739ba4b23e5`. Đây chưa phải xác nhận chạy trên iPhone thật.
 
 Hiện có **2 thành viên nhưng chỉ 1 thiết bị PWA sẵn sàng**. Điện thoại còn lại cần cài/ghép PWA và cấp quyền thông báo để nhận thông báo hai chiều. Không cần ghép lại máy đã hoạt động.
+
+PWA đã [xuất bản thành công](https://github.com/thuyan1510/gia-dinh-an-nam/actions/runs/38327595577) từ commit `b48a22c`. Đã kiểm tra bản đang phục vụ trên Pages có loại thông báo `message` và service worker `an-nam-shell-v2-conversation`; endpoint cấu hình Web Push trả `configured=true`, các endpoint riêng tư từ chối yêu cầu không có xác thực (401).
+
+## Việc cần làm trên hai điện thoại
+
+1. Tải artifact `gia-dinh-an-nam-unsigned-ipa` của lượt build thành công, giải nén và ký/cài IPA như trước. Giữ Bundle ID `vn.giadinhanam.family`, không gỡ app cũ để tránh mất dữ liệu chưa đồng bộ.
+2. Mở PWA **An Nam** từ Màn hình chính để cập nhật service worker. Máy đã ghép và nhận tốt không cần xóa/cài lại PWA.
+3. Máy chưa ghép: IPA → **Cài đặt → Thông báo**, mở PWA qua Safari → Chia sẻ → Thêm vào Màn hình chính. Tạo mã ghép trong IPA trên chính máy đó, mở biểu tượng PWA, nhập mã và bật Web Push. Dùng tài khoản riêng của mỗi người.
+4. Gửi thử chữ/ảnh/video từ tab **Trao đổi** theo cả hai chiều, khi máy nhận đã khóa màn hình. Chạm thông báo phải mở đúng tin. Không coi trạng thái “Đã gửi” trong chat là đã nhận trên điện thoại.
+5. Nút `+` → **Tạo lời nhắc** → người còn lại nhấn **Xác nhận**; kiểm tra người tạo nhận được thông báo và tin xác nhận. **Báo người nhà** gửi thông báo nhưng không có nút xác nhận; cần máy kia đã ghép PWA.
+6. Kiểm tra nhập đoạn dài, ghi chú và bánh xe ngày giờ trên iPhone 11/15. Đây là phần cần nghiệm thu trên máy thật; kiểm thử trình duyệt không chứng minh được hành vi bàn phím iOS.
+
+Không cần chạy SQL hoặc thiết lập lại bot/VAPID/Cron cho bản nâng cấp này trên project hiện tại.
 
 ## Giao diện và hành vi
 
@@ -64,6 +81,8 @@ where singleton = true;
 Đổi `true` thành `false` để tạm tắt. Lịch sử được giữ; job hết hạn không phát lại khi bật. Tin chat mới chỉ dùng PWA ngay cả khi bật lại Telegram; các sự kiện cũ tiếp tục chính sách song song/dự phòng đã lưu. Bot vẫn được giữ để quản lý liên kết; đây là tắt gửi thông báo tự động, không xóa webhook.
 
 ## Kiểm thử
+
+Ngày 13/10/2026, GitHub Actions chạy **68/68 tests đạt** trên đúng commit phát hành `b48a22c` (không gồm các thay đổi thử nghiệm Telegram/widget chưa commit trong workspace). Kiểm tra Cron trực tiếp: job vẫn active, lần chạy gần nhất `succeeded`.
 
 Kết quả cục bộ ngày 12/10/2026: 72/72 Node tests đạt; TypeScript đạt; Deno check cho `telegram-worker`, `webpush-account`, `webpush-device` đạt; export JavaScript/Hermes iOS đạt. Hai bộ kiểm thử browser (conversation và notification) đạt. Đây **không phải** kết quả build IPA/Xcode hoặc nghiệm thu bàn phím/thông báo trên iPhone thật.
 
