@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   router,
   Stack,
@@ -102,6 +102,7 @@ export default function NotificationOpen() {
     const tables = {
       reminder: "reminders",
       post: "family_posts",
+      message: "family_messages",
       comment: "post_comments",
       care: "care_entries",
       pregnancy: "care_entries",
@@ -198,6 +199,30 @@ export default function NotificationOpen() {
       };
     }, [load]),
   );
+  useEffect(() => {
+    if (
+      !record ||
+      offline ||
+      !target ||
+      !["message", "reminder"].includes(target.type)
+    )
+      return;
+    let active = true;
+    // Resolve access first, then sync the conversation before opening its exact card.
+    void syncNow().then(() => {
+      if (active)
+        router.replace({
+          pathname: "/trao-doi",
+          params:
+            target.type === "message"
+              ? { messageId: target.id }
+              : { reminderId: target.id },
+        });
+    });
+    return () => {
+      active = false;
+    };
+  }, [record?.id, offline, key, syncNow]);
   // Reuse the legacy-safe decoder: malformed JSON objects must never reach Text.
   const details =
     target?.type === "reminder" && typeof record?.details === "string"
@@ -206,6 +231,7 @@ export default function NotificationOpen() {
   const title = {
     reminder: "Lời nhắc",
     post: "Bài đăng",
+    message: "Trao đổi",
     comment: "Bình luận",
     care: "Nhật ký chăm bé",
     pregnancy: "Trạng thái thai kỳ",

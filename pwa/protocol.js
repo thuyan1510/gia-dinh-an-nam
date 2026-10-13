@@ -1,5 +1,13 @@
 (function (root) {
-  const types = ["reminder", "post", "comment", "care", "pregnancy", "test"];
+  const types = [
+    "reminder",
+    "post",
+    "comment",
+    "care",
+    "pregnancy",
+    "message",
+    "test",
+  ];
   function target(value) {
     if (
       !value ||
@@ -60,6 +68,7 @@
       ({
         reminders: "reminder",
         family_posts: "post",
+        family_messages: "message",
         post_comments: "comment",
         care_entries: e.kind === "pregnancy_status" ? "pregnancy" : "care",
       })[e.source_table] || "test",

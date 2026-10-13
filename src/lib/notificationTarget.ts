@@ -4,6 +4,7 @@ export const notificationTypes = [
   "comment",
   "care",
   "pregnancy",
+  "message",
   "test",
 ] as const;
 export type NotificationType = (typeof notificationTypes)[number];

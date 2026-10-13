@@ -11,7 +11,7 @@ import {
   formatDateTime,
 } from "../../src/components/ui";
 import { useApp } from "../../src/providers/AppProvider";
-import { telegramAction } from "../../src/services/telegram";
+import { webPushAction } from "../../src/services/webPush";
 
 export default function FamilyScreen() {
   const { family, reminders, currentUserId, completeReminder, syncNow } =
@@ -50,8 +50,8 @@ export default function FamilyScreen() {
         onPress={() => router.push("/family/attention")}
       />
       <PrimaryButton
-        title="Liên kết / kiểm tra Telegram"
-        onPress={() => router.push("/family/telegram")}
+        title="Mở cuộc trò chuyện"
+        onPress={() => router.push("/trao-doi")}
       />
       <SectionHeader title="Lời nhắc & lịch gia đình" />
       {!reminders.length && (
@@ -82,20 +82,22 @@ export default function FamilyScreen() {
           </Text>
           {!r.completed_at && (
             <View style={{ gap: 8 }}>
-              {r.created_by !== currentUserId && !r.acknowledged_at && (
-                <PrimaryButton
-                  title="Tôi đã nhận lời nhắc"
-                  disabled={!!busy || r.sync_state === "pending"}
-                  onPress={() =>
-                    void action(r.id, () =>
-                      telegramAction("acknowledge", {
-                        id: r.id,
-                        revision: r.schedule_version ?? 1,
-                      }),
-                    )
-                  }
-                />
-              )}
+              {r.reminder_kind !== "attention" &&
+                r.created_by !== currentUserId &&
+                !r.acknowledged_at && (
+                  <PrimaryButton
+                    title="Tôi đã nhận lời nhắc"
+                    disabled={!!busy || r.sync_state === "pending"}
+                    onPress={() =>
+                      void action(r.id, () =>
+                        webPushAction("acknowledge", {
+                          id: r.id,
+                          revision: r.schedule_version ?? 1,
+                        }),
+                      )
+                    }
+                  />
+                )}
               <PrimaryButton
                 title="Đánh dấu đã hoàn thành"
                 disabled={!!busy}

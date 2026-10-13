@@ -66,8 +66,15 @@ Deno.serve(async (req) => {
       [devices, preference, telegram, deliveries].forEach((r) =>
         check(r.error),
       );
+      const channels = await admin
+        .from("notification_channels")
+        .select("telegram_enabled")
+        .eq("singleton", true)
+        .single();
+      check(channels.error);
       return reply({
         ...publicConfig(),
+        telegramEnabled: channels.data?.telegram_enabled === true,
         userId: user.id,
         devices: devices.data,
         policy: preference.data?.telegram_policy ?? "parallel",
@@ -103,13 +110,11 @@ Deno.serve(async (req) => {
         return reply({ error: "Chính sách không hợp lệ." }, 400);
       check(
         (
-          await admin
-            .from("notification_preferences")
-            .upsert({
-              user_id: user.id,
-              telegram_policy: input.policy,
-              updated_at: new Date().toISOString(),
-            })
+          await admin.from("notification_preferences").upsert({
+            user_id: user.id,
+            telegram_policy: input.policy,
+            updated_at: new Date().toISOString(),
+          })
         ).error,
       );
       return reply({ ok: true });

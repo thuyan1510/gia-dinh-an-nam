@@ -1,5 +1,5 @@
 importScripts("./protocol.js", "./store.js");
-const CACHE = "an-nam-shell-v1",
+const CACHE = "an-nam-shell-v2-conversation",
   P = AnNamProtocol,
   store = AnNamStore;
 const SHELL = [

@@ -1,5 +1,7 @@
 # Thiết lập Web Push cho hai iPhone
 
+> Bản 0.9.0 thêm tab Trao đổi: xem [CONVERSATION_0_9.md](./CONVERSATION_0_9.md). Ngày 13/10/2026 đã áp dụng migration 0008 và deploy lại Functions, **Telegram đã tạm tắt**, PWA và nhắc cục bộ giữ hoạt động. Không chạy lại 0008, không dừng Cron/worker dùng chung với PWA. Các mục bên dưới ghi lại thiết lập ban đầu 0.8.0.
+
 ## Trạng thái
 
 Mã nằm trong bản 0.8.0. **Cài IPA mới chưa tự bật Web Push**: còn cần PWA HTTPS, migration/Functions/Secrets, rồi ghép riêng mỗi máy. Nhắc cục bộ và Telegram cũ tiếp tục dùng được. Không cần VPS chạy thường trực; dùng Supabase và hosting tĩnh.

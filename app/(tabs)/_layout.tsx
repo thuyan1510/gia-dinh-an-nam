@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const icons = {
   index: ["newspaper", "newspaper-outline"],
   "em-be": ["happy", "happy-outline"],
+  "trao-doi": ["chatbubbles", "chatbubbles-outline"],
   "theo-doi": ["pulse", "pulse-outline"],
   lich: ["book", "book-outline"],
   "gia-dinh": ["people", "people-outline"],
@@ -43,6 +44,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="index" options={{ title: "Bảng tin" }} />
       <Tabs.Screen name="em-be" options={{ title: "Em bé" }} />
+      <Tabs.Screen name="trao-doi" options={{ title: "Trao đổi" }} />
       <Tabs.Screen name="lich" options={{ title: "Cẩm nang" }} />
       <Tabs.Screen name="theo-doi" options={{ href: null }} />
       <Tabs.Screen name="gia-dinh" options={{ href: null }} />

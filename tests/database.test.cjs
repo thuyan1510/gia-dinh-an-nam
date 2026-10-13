@@ -53,6 +53,38 @@ function database() {
     },
   };
 }
+test("conversation metadata survives remote merge, restart and SQLite upgrade", async () => {
+  const db = database();
+  await migrateDatabase(db);
+  const before = await loadSnapshot(db);
+  const message = {
+    id: "event_conversation_test",
+    family_id: before.family.id,
+    body: "Đã xác nhận lời nhắc",
+    created_at: "2099-01-01T00:00:00Z",
+    created_by: "other_parent",
+    created_by_name: "Mẹ",
+    attachments: [],
+    message_kind: "acknowledged",
+    reminder_id: "reminder_test",
+    reminder_revision: 2,
+  };
+  await mergeRemoteSnapshot(db, {
+    children: [],
+    careEntries: [],
+    messages: [message],
+    reminders: [],
+  });
+  await migrateDatabase(db);
+  const after = (await loadSnapshot(db)).messages.find(
+    (m) => m.id === message.id,
+  );
+  assert.equal(after.message_kind, "acknowledged");
+  assert.equal(after.reminder_id, "reminder_test");
+  assert.equal(after.reminder_revision, 2);
+  assert.equal(after.sync_state, "synced");
+  db.raw.close();
+});
 test("0.1 schema upgrades without losing records; second startup is idempotent", async () => {
   const db = database();
   const v1Schema = fs

@@ -7,6 +7,25 @@ import { client, familySession, uploadPhotoWithMetadata } from "./social";
 import { makeId } from "../lib/ids";
 import { messageAttachments, MAX_VIDEO_BYTES } from "../lib/messageMedia";
 
+/** The request ID survives uncertain network replies; retry never sends a second message. */
+export async function sendChatMessage(
+  id: string,
+  body: string,
+  attachments: MessageAttachment[],
+  familyId: string,
+) {
+  const { error } = await client().rpc("send_family_chat_message", {
+    request_id: id,
+    message_body: body.trim(),
+    media: attachments,
+    expected_family: familyId,
+  });
+  if (error)
+    throw new Error(
+      "Chưa xác nhận gửi được tin nhắn. Nội dung được giữ lại; hãy thử gửi lại khi có mạng.",
+    );
+}
+
 export async function pickChatMedia(kind: "image" | "video") {
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: kind === "image" ? ["images"] : ["videos"],
@@ -80,7 +99,7 @@ export async function readChat(
   limit = 40,
 ): Promise<FamilyMessage[]> {
   const rows = await db.getAllAsync<FamilyMessage>(
-    "SELECT * FROM family_messages WHERE family_id=? ORDER BY created_at DESC,id DESC LIMIT ?",
+    "SELECT * FROM family_messages WHERE family_id=? AND sync_state='synced' ORDER BY created_at DESC,id DESC LIMIT ?",
     familyId,
     limit,
   );

@@ -1,5 +1,7 @@
 # Gia Đình An Nam
 
+**0.9.0 (build 11)** thêm tab **Trao đổi** cạnh Em bé: tin nhắn chữ/ảnh/video, lời nhắc trong chat có xác nhận, báo người nhà không cần xác nhận, popup 4 trường và bánh xe ngày giờ iPhone. Ngày 13/10/2026 đã áp dụng migration 0008 và deploy Functions: tạm tắt gửi Telegram nhưng giữ bot/liên kết/lịch sử; thông báo dùng PWA và nhắc cục bộ. IPA/PWA đang chuẩn bị phát hành qua GitHub Actions. Xem [hướng dẫn nâng cấp và kiểm thử](docs/CONVERSATION_0_9.md).
+
 **0.8.0 (build 10)** làm lại Trạng thái hôm nay: ảnh thai nhi trong suốt đóng gói sẵn, bỏ header che nội dung, tuổi thai dưới ảnh, dải tuần và nút nhanh gọn hơn. Thêm PWA Web Push + mở đúng bản ghi trong IPA, quản lý từng thiết bị và Telegram dự phòng; giữ nhắc cục bộ. Backend Supabase, GitHub Pages và VAPID đã cấu hình ngày 12/10/2026; **chưa kiểm chứng nhận trên iPhone**. Xem [thay đổi & kiểm thử](docs/WEB_PUSH_IMPLEMENTATION.md) và [hướng dẫn triển khai, ghép hai máy](docs/WEB_PUSH_SETUP.md). Mỗi điện thoại cần cài/ghép PWA tại https://thuyan1510.github.io/gia-dinh-an-nam/.
 
 Repository/build hiện tại: [thuyan1510/gia-dinh-an-nam](https://github.com/thuyan1510/gia-dinh-an-nam), [Build IPA for ESign](https://github.com/thuyan1510/gia-dinh-an-nam/actions/workflows/build-unsigned-ios.yml). Các liên kết tài khoản cũ bên dưới chỉ lưu lịch sử.

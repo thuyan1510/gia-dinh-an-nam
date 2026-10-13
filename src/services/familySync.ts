@@ -203,7 +203,8 @@ export async function synchronizeFamily(
   let failed = 0;
   const blockedEntities = new Set<string>();
   for (const item of await getPendingOutbox(db)) {
-    // Retired chat: preserve pending content locally, never send it as a reminder.
+    // Pre-0.9 archived outbox: never surprise-send old test messages. New chat uses
+    // the authenticated idempotent send_family_chat_message RPC, not this queue.
     if (item.entity_type === "family_messages") continue;
     const entityKey = `${item.entity_type}:${item.entity_id}`;
     if (blockedEntities.has(entityKey)) {
@@ -283,7 +284,7 @@ export async function synchronizeFamily(
       reminders!.length,
     message: failed
       ? `Còn ${failed} thay đổi chưa gửi được. Dữ liệu vẫn lưu trên máy; hãy thử đồng bộ lại.`
-      : "Đã đồng bộ dữ liệu gia đình. Trạng thái Telegram xem trong Cài đặt → Telegram.",
+      : "Đã đồng bộ dữ liệu gia đình. Trạng thái thông báo xem trong Cài đặt → Thông báo.",
   };
 }
 

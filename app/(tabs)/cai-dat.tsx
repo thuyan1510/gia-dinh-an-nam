@@ -97,7 +97,7 @@ export default function SettingsScreen() {
         <SettingRow
           icon="notifications-outline"
           title="Quyền thông báo"
-          body="Nhắc đã đặt trên iPhone vẫn hoạt động khi mất mạng. Hoạt động từ người nhà nhận qua PWA Web Push và Telegram theo thiết lập."
+          body="Nhắc đã đặt trên iPhone vẫn hoạt động khi mất mạng. Tin nhắn và hoạt động từ người nhà nhận qua PWA Web Push."
           status={permission}
         />
         <PrimaryButton
@@ -120,8 +120,8 @@ export default function SettingsScreen() {
         />
         {localState ? <Text style={styles.helper}>{localState}</Text> : null}
         <PrimaryButton
-          title="Liên kết / kiểm tra Telegram"
-          onPress={() => router.push("/family/telegram")}
+          title="Trạng thái các kênh thông báo"
+          onPress={() => router.push("/notifications")}
         />
         <PrimaryButton
           title="Tiện ích ngoài màn hình"

@@ -179,7 +179,12 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="reminder/new"
-            options={{ title: "Tạo nhắc việc", presentation: "modal" }}
+            options={{
+              headerShown: false,
+              presentation: "transparentModal",
+              animation: "fade",
+              contentStyle: { backgroundColor: "transparent" },
+            }}
           />
           <Stack.Screen
             name="vaccine/[id]"

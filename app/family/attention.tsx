@@ -26,7 +26,7 @@ export default function AttentionScreen() {
       await webPushAction("attention", { request_id: requestId.current });
       setSent(true);
       setMessage(
-        "Đã lưu yêu cầu trên máy chủ, chưa có nghĩa người nhà đã nhận. Xem lời nhắc để chờ xác nhận; liên hệ trực tiếp nếu cần gấp.",
+        "Đã gửi báo người nhà vào Trao đổi và xếp hàng Web Push. Chưa có nghĩa người nhà đã đọc; liên hệ trực tiếp nếu cần gấp.",
       );
       await syncNow();
     } catch (e) {
@@ -44,13 +44,13 @@ export default function AttentionScreen() {
     <Screen>
       <SectionHeader title="Báo bố/mẹ cần hỗ trợ" />
       <Card>
-        <Text>Gửi tới người còn lại qua Web Push / Telegram đã liên kết:</Text>
+        <Text>Gửi tới người còn lại qua Web Push đã liên kết:</Text>
         <Text style={{ fontSize: 22, fontWeight: "700" }}>
           “Cần bạn hỗ trợ ngay”
         </Text>
         <Text>
           Không gọi điện. Không gửi vị trí hay hồ sơ bé. Cần Internet, người
-          nhận đã bật Web Push hoặc liên kết Telegram.
+          nhận đã bật Web Push.
         </Text>
         <Text>
           Đây không phải hệ thống cấp cứu; thông báo có thể bị chậm, tắt tiếng
@@ -63,7 +63,7 @@ export default function AttentionScreen() {
           busy
             ? "Đang gửi…"
             : sent
-              ? "Đã tạo lời nhắc"
+              ? "Đã gửi báo người nhà"
               : "Xác nhận gửi báo nhanh"
         }
         disabled={busy || sent}
@@ -71,8 +71,8 @@ export default function AttentionScreen() {
       />
       {!!message && <Text accessibilityRole="alert">{message}</Text>}
       <PrimaryButton
-        title="Xem người nhà đã xác nhận chưa"
-        onPress={() => router.replace("/gia-dinh")}
+        title="Mở cuộc trò chuyện"
+        onPress={() => router.replace("/trao-doi")}
       />
     </Screen>
   );

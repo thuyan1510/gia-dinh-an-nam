@@ -173,48 +173,60 @@ export default function NotificationsSettings() {
         />
       </Card>
       <Card style={s.gap}>
-        <Text style={s.label}>Telegram dự phòng</Text>
-        <Text style={s.body}>
-          {status?.telegram?.enabled && status.telegram.confirmed_at
-            ? "Telegram đang liên kết và bật."
-            : "Telegram chưa bật."}{" "}
-          Lựa chọn bên dưới không tự bật/tắt liên kết Telegram.
+        <Text style={s.label}>
+          Telegram ·{" "}
+          {status?.telegramEnabled === false ? "Đã tạm tắt" : "Dự phòng"}
         </Text>
-        <Text style={s.hint}>
-          Song song: giữ như cũ, có thể nhận cả hai kênh. Dự phòng: chờ 2 phút;
-          chỉ bỏ lượt Telegram khi PWA báo đã gọi hiển thị hoặc IPA đã mở bản
-          ghi. Đây vẫn không phải bằng chứng bạn đã đọc.
-        </Text>
-        <PrimaryButton
-          title={
-            status?.policy === "parallel"
-              ? "✓ Telegram song song"
-              : "Dùng Telegram song song"
-          }
-          disabled={busy || !status}
-          onPress={() =>
-            perform(async () => {
-              await webPushAction("policy", { policy: "parallel" });
-            })
-          }
-        />
-        <PrimaryButton
-          title={
-            status?.policy === "fallback"
-              ? "✓ Telegram dự phòng"
-              : "Dùng Telegram dự phòng"
-          }
-          disabled={busy || !status}
-          onPress={() =>
-            perform(async () => {
-              await webPushAction("policy", { policy: "fallback" });
-            })
-          }
-        />
-        <LinkButton
-          title="Bật / tắt / liên kết Telegram"
-          onPress={() => router.push("/family/telegram")}
-        />
+        {status?.telegramEnabled === false ? (
+          <Text style={s.body}>
+            Đã tắt gửi Telegram trên máy chủ. Cấu hình bot, liên kết và lịch sử
+            vẫn được giữ. Thông báo từ xa dùng PWA; nhắc cục bộ không thay đổi.
+          </Text>
+        ) : (
+          <>
+            <Text style={s.body}>
+              {status?.telegram?.enabled && status.telegram.confirmed_at
+                ? "Telegram đang liên kết và bật."
+                : "Telegram chưa bật."}{" "}
+              Lựa chọn bên dưới không tự bật/tắt liên kết Telegram.
+            </Text>
+            <Text style={s.hint}>
+              Song song: giữ như cũ, có thể nhận cả hai kênh. Dự phòng: chờ 2
+              phút; chỉ bỏ lượt Telegram khi PWA báo đã gọi hiển thị hoặc IPA đã
+              mở bản ghi. Đây vẫn không phải bằng chứng bạn đã đọc.
+            </Text>
+            <PrimaryButton
+              title={
+                status?.policy === "parallel"
+                  ? "✓ Telegram song song"
+                  : "Dùng Telegram song song"
+              }
+              disabled={busy || !status}
+              onPress={() =>
+                perform(async () => {
+                  await webPushAction("policy", { policy: "parallel" });
+                })
+              }
+            />
+            <PrimaryButton
+              title={
+                status?.policy === "fallback"
+                  ? "✓ Telegram dự phòng"
+                  : "Dùng Telegram dự phòng"
+              }
+              disabled={busy || !status}
+              onPress={() =>
+                perform(async () => {
+                  await webPushAction("policy", { policy: "fallback" });
+                })
+              }
+            />
+            <LinkButton
+              title="Bật / tắt / liên kết Telegram"
+              onPress={() => router.push("/family/telegram")}
+            />
+          </>
+        )}
       </Card>
       <Card style={s.gap}>
         <Text style={s.label}>Nhắc cục bộ: {local}</Text>

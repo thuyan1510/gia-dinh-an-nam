@@ -18,6 +18,7 @@ export async function eventSource(admin: SupabaseClient, event: FamilyEvent) {
     ![
       "reminders",
       "family_posts",
+      "family_messages",
       "post_comments",
       "care_entries",
       "test",
@@ -106,7 +107,7 @@ export function privateContent(
             schedule_version: row.schedule_version,
             created_by: row.created_by,
           }
-        : ["post", "comment"].includes(type)
+        : ["post", "comment", "message"].includes(type)
           ? {
               id: row.id,
               body: row.body,

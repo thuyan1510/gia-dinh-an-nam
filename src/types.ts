@@ -44,6 +44,15 @@ export type FamilyMessage = {
   created_by: string;
   created_by_name: string;
   attachments?: MessageAttachment[];
+  message_kind?:
+    | "message"
+    | "reminder"
+    | "attention"
+    | "acknowledged"
+    | "rescheduled"
+    | "completed";
+  reminder_id?: string | null;
+  reminder_revision?: number | null;
   sync_state?: "pending" | "synced" | "error";
 };
 
@@ -63,6 +72,7 @@ export type Reminder = {
   title: string;
   details: string | null;
   due_at: string;
+  created_at?: string;
   completed_at: string | null;
   created_by: string;
   created_by_name: string;

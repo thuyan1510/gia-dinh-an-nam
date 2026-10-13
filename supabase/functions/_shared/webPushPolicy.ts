@@ -41,6 +41,7 @@ export function subscriptionFields(value: unknown) {
 export function sourceType(source: string, kind: string) {
   if (source === "reminders") return "reminder";
   if (source === "family_posts") return "post";
+  if (source === "family_messages") return "message";
   if (source === "post_comments") return "comment";
   if (source === "care_entries")
     return kind === "pregnancy_status" ? "pregnancy" : "care";
@@ -54,6 +55,7 @@ export function pushBody(kind: string, dueAt?: string) {
     acknowledged: "Người nhà đã xác nhận nhận lời nhắc.",
     completed: "Lời nhắc đã được cập nhật trạng thái hoàn thành.",
     family_posts: "Gia đình có bài đăng mới.",
+    family_messages: "Bạn có tin nhắn mới từ người nhà. Chạm để mở Trao đổi.",
     post_comments: "Gia đình có bình luận mới.",
     care_entries: "Có cập nhật mới trong nhật ký chăm bé.",
     pregnancy_status: "Cân nặng hoặc triệu chứng thai kỳ vừa được cập nhật.",

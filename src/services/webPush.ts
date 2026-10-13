@@ -36,6 +36,7 @@ export type WebPushStatus = {
   pwaUrl: string;
   userId: string;
   policy: "parallel" | "fallback";
+  telegramEnabled?: boolean;
   telegram: { enabled: boolean; confirmed_at: string | null } | null;
   devices: WebPushDevice[];
   events: WebPushEvent[];
@@ -69,6 +70,7 @@ export function eventTarget(event: WebPushEvent) {
   const type = {
     reminders: "reminder",
     family_posts: "post",
+    family_messages: "message",
     post_comments: "comment",
     care_entries: event.kind === "pregnancy_status" ? "pregnancy" : "care",
     test: "test",

@@ -112,7 +112,12 @@ export async function migrateDatabase(db: SQLiteDatabase): Promise<void> {
   // Add columns individually so upgrades from the installed 0.1 database preserve rows.
   for (const [table, definitions] of Object.entries({
     children: ["avatar_path TEXT", "cover_path TEXT"],
-    family_messages: ["attachments TEXT NOT NULL DEFAULT '[]'"],
+    family_messages: [
+      "attachments TEXT NOT NULL DEFAULT '[]'",
+      "message_kind TEXT NOT NULL DEFAULT 'message'",
+      "reminder_id TEXT",
+      "reminder_revision INTEGER",
+    ],
     care_entries: ["details TEXT NOT NULL DEFAULT '{}'", "deleted_at TEXT"],
     reminders: [
       "reminder_kind TEXT NOT NULL DEFAULT 'calendar'",
@@ -217,7 +222,7 @@ export async function loadSnapshot(db: SQLiteDatabase): Promise<AppSnapshot> {
     : [];
   const messages = family
     ? await db.getAllAsync<FamilyMessage>(
-        `SELECT id, family_id, body, created_at, created_by, created_by_name, attachments, sync_state
+        `SELECT id, family_id, body, created_at, created_by, created_by_name, attachments, sync_state, message_kind, reminder_id, reminder_revision
          FROM family_messages WHERE family_id = ?
          ORDER BY created_at DESC LIMIT 30`,
         family.id,
@@ -783,6 +788,13 @@ export async function mergeRemoteSnapshot(
       await db.runAsync(
         "UPDATE family_messages SET attachments=? WHERE id=? AND sync_state <> 'pending'",
         JSON.stringify(messageAttachments(message.attachments)),
+        message.id,
+      );
+      await db.runAsync(
+        "UPDATE family_messages SET message_kind=?,reminder_id=?,reminder_revision=? WHERE id=? AND sync_state <> 'pending'",
+        message.message_kind ?? "message",
+        message.reminder_id ?? null,
+        message.reminder_revision ?? null,
         message.id,
       );
     }
