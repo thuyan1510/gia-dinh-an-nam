@@ -1,0 +1,236 @@
+[
+  {
+    "id": "1",
+    "type": "pre_pregnant",
+    "label": "Di truyền và giới tính",
+    "slug": "di-truyen-gioi-tinh",
+    "icon": "static/handbook-categories/pre_pregnant/di-truyen-gioi-tinh.png",
+    "enabled": true,
+    "group": {
+      "id": "1016"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pre_pregnant/di-truyen-gioi-tinh.png",
+    "sha256": "b09adb488ef70fbb184697cef458f5b4de784be732c1065c786bf54391ce1646"
+  },
+  {
+    "id": "3",
+    "type": "pre_pregnant",
+    "label": "Tâm lý & sức khoẻ",
+    "slug": "suc-khoe",
+    "icon": "static/handbook-categories/pre_pregnant/suc-khoe.png",
+    "enabled": true,
+    "group": {
+      "id": "1007"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pre_pregnant/suc-khoe.png",
+    "sha256": "5d836db892d6d7289bb1a753793c1c4cd89de8fc32e27184310913aaf00d8057"
+  },
+  {
+    "id": "4",
+    "type": "pre_pregnant",
+    "label": "Dinh dưỡng",
+    "slug": "vitamin",
+    "icon": "static/handbook-categories/pre_pregnant/vitamin.png",
+    "enabled": true,
+    "group": {
+      "id": "1010"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pre_pregnant/vitamin.png",
+    "sha256": "d91651bf2446c773df5c7f7805a8ef4d0309dd8449a76750010276e0cf6241b9"
+  },
+  {
+    "id": "5",
+    "type": "pre_pregnant",
+    "label": "Thay đổi thói quen",
+    "slug": "thay-doi-thoi-quen",
+    "icon": "static/handbook-categories/pre_pregnant/thay-doi-thoi-quen.png",
+    "enabled": true,
+    "group": {
+      "id": "1011"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pre_pregnant/thay-doi-thoi-quen.png",
+    "sha256": "3a7d2c3bba105e7d30158003cdd513f5440bf04d2548c3c0a27af604ecbd333e"
+  },
+  {
+    "id": "9",
+    "type": "pregnant",
+    "label": "Thai nhi theo tuần",
+    "slug": "thai-nhi-theo-tuan",
+    "icon": "static/handbook-categories/pregnant/thai-nhi-theo-tuan.png",
+    "enabled": true,
+    "group": {
+      "id": "1092"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/thai-nhi-theo-tuan.png",
+    "sha256": "078b3b3b03363a4fd874e473d230d4f77127fb0adf04ea690235c26d44346b73"
+  },
+  {
+    "id": "10",
+    "type": "pregnant",
+    "label": "Thay đổi của mẹ",
+    "slug": "thay-doi-cua-me",
+    "icon": "static/handbook-categories/pregnant/thay-doi-cua-me.png",
+    "enabled": true,
+    "group": {
+      "id": "1093"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/thay-doi-cua-me.png",
+    "sha256": "e4edb684461a4a551110bb6864f40692d92722b100de4ce66f5d8895ee5f4499"
+  },
+  {
+    "id": "11",
+    "type": "pregnant",
+    "label": "Dinh dưỡng",
+    "slug": "dinh-duong",
+    "icon": "static/handbook-categories/pregnant/dinh-duong.png",
+    "enabled": true,
+    "group": {
+      "id": "1096"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/dinh-duong.png",
+    "sha256": "d91651bf2446c773df5c7f7805a8ef4d0309dd8449a76750010276e0cf6241b9"
+  },
+  {
+    "id": "14",
+    "type": "pregnant",
+    "label": "Khám thai",
+    "slug": "kham-thai",
+    "icon": "static/handbook-categories/pregnant/kham-thai.png",
+    "enabled": true,
+    "group": {
+      "id": "1003"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/kham-thai.png",
+    "sha256": "702843d6da8ecf7c63d8cdbda7e9f7cac84757e0d061dda5b0a9a4b60d67580f"
+  },
+  {
+    "id": "16",
+    "type": "pregnant",
+    "label": "Sinh nở",
+    "slug": "sinh-no",
+    "icon": "static/handbook-categories/pregnant/sinh-no.png",
+    "enabled": true,
+    "group": {
+      "id": "1087"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/sinh-no.png",
+    "sha256": "11a589d4e5cdb043655fe609ac87b36a82935a37b0ab99da851952fd96c5655e"
+  },
+  {
+    "id": "17",
+    "type": "pregnant",
+    "label": "Các vấn đề thường gặp",
+    "slug": "van-de-thuong-gap",
+    "icon": "static/handbook-categories/pregnant/van-de-thuong-gap.png",
+    "enabled": true,
+    "group": {
+      "id": "1001"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/van-de-thuong-gap.png",
+    "sha256": "2ac66a3bc368c95038f029a5d78f6dbbf87c66841022115a8e444a9bf3c5a4fa"
+  },
+  {
+    "id": "18",
+    "type": "pregnant",
+    "label": "Thai giáo",
+    "slug": "thai-giao",
+    "icon": "static/handbook-categories/pregnant/thai-giao.png",
+    "enabled": true,
+    "group": {
+      "id": "1097"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/pregnant/thai-giao.png",
+    "sha256": "7bc4857125e0195b4475fab213c374253249b2971152d67d3864678e88ed8f1d"
+  },
+  {
+    "id": "21",
+    "type": "mom",
+    "label": "Trẻ sơ sinh",
+    "slug": "so-sinh",
+    "icon": "static/handbook-categories/mom/so-sinh.png",
+    "enabled": true,
+    "group": {
+      "id": "1113"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/so-sinh.png",
+    "sha256": "8d4fddadaeee320eb6bd0bc564e7e859717d4dc0b8dafeeaf1182457d5258a26"
+  },
+  {
+    "id": "22",
+    "type": "mom",
+    "label": "Thuốc và tiêm phòng",
+    "slug": "thuoc-va-tiem-chung",
+    "icon": "static/handbook-categories/mom/thuoc-va-tiem-chung.png",
+    "enabled": true,
+    "group": {
+      "id": "1036"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/thuoc-va-tiem-chung.png",
+    "sha256": "7df09e3b405091efd3270be2a58248d84ba17deebcc60430be6754945595acf3"
+  },
+  {
+    "id": "23",
+    "type": "mom",
+    "label": "Bệnh trẻ em",
+    "slug": "benh-tre-em",
+    "icon": "static/handbook-categories/mom/benh-tre-em.png",
+    "enabled": true,
+    "group": {
+      "id": "1031"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/benh-tre-em.png",
+    "sha256": "f2645e931ee461624131506d24815d534aaf8a54d1e3f0a3660867347657b205"
+  },
+  {
+    "id": "24",
+    "type": "mom",
+    "label": "Tuần khủng hoảng",
+    "slug": "tuan-khung-hoang",
+    "icon": "static/handbook-categories/mom/tuan-khung-hoang.png",
+    "enabled": true,
+    "group": {
+      "id": "1506"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/tuan-khung-hoang.png",
+    "sha256": "fc77c58416aa9cc1dc7b8c55a384367147a7c1d8eab847701722b106f4cd112c"
+  },
+  {
+    "id": "28",
+    "type": "mom",
+    "label": "An toàn cho bé",
+    "slug": "an-toan-cho-be",
+    "icon": "static/handbook-categories/mom/an-toan-cho-be.png",
+    "enabled": true,
+    "group": {
+      "id": "1026"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/an-toan-cho-be.png",
+    "sha256": "bcdd4cdde3b64d1560aad2252ee0cf7d100ba395aa9f4ff8161e2a437b8a0045"
+  },
+  {
+    "id": "29",
+    "type": "mom",
+    "label": "Dấu hiệu bất thường",
+    "slug": "bat-thuong-o-tre",
+    "icon": "static/handbook-categories/mom/bat-thuong-o-tre.png",
+    "enabled": true,
+    "group": {
+      "id": "1029"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/bat-thuong-o-tre.png",
+    "sha256": "7201a44f2a9061173864c038eb67b970d7a04dc4f9c3617e669b30abd9501d57"
+  },
+  {
+    "id": "30",
+    "type": "mom",
+    "label": "Dùng thuốc an toàn",
+    "slug": "dung-thuoc-an-toan",
+    "icon": "static/handbook-categories/mom/dung-thuoc-an-toan.png",
+    "enabled": true,
+    "group": {
+      "id": "1041"
+    },
+    "sourceUrl": "https://static.cdn.becuame.com/static/handbook-categories/mom/dung-thuoc-an-toan.png",
+    "sha256": "e443baa122a8453e94d062c3b3f4fc4e203e1a8036a6159f21a3fe3776baa41d"
+  }
+]

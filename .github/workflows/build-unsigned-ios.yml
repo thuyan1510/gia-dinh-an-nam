@@ -67,6 +67,22 @@ jobs:
           ipa="build/ios/Gia-Dinh-An-Nam-unsigned.ipa"
           test -s "$ipa"
           unzip -t "$ipa" >/dev/null
+          # Check real bundled recordings, not just source manifests. A missing
+          # Metro asset would otherwise only be noticed after installing the IPA.
+          python3 - "$ipa" <<'PY'
+          import hashlib, json, sys, zipfile
+          with open('src/data/education/music.json') as f:
+              music = json.load(f)
+          assert len(music) == 10, 'Expected ten offline recordings'
+          expected = {m['sha256']: m['id'] for m in music}
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              for name in z.namelist():
+                  if name.lower().endswith('.m4a'):
+                      expected.pop(hashlib.sha256(z.read(name)).hexdigest(), None)
+          if expected:
+              raise SystemExit('Missing/modified offline recordings in IPA: ' + ', '.join(expected.values()))
+          print('Verified all ten offline recordings in IPA')
+          PY
           # Dùng grep thay cho regex literal của BSD awk trên macOS; BSD awk
           # coi dấu / trong character class là dấu kết thúc biểu thức.
           app_info=$(unzip -Z1 "$ipa" | grep -E -m 1 '^Payload/[^/]+\.app/Info\.plist$' || true)

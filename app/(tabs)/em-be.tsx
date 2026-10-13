@@ -33,7 +33,8 @@ import images from "../../src/data/legacyImageSources.json";
 import { useApp } from "../../src/providers/AppProvider";
 export { RecoverableError as ErrorBoundary } from "../../src/components/RecoverableError";
 import { useCareHistory } from "../../src/lib/useCareHistory";
-import { GrowthChart } from "../../src/components/GrowthChart";
+import { GrowthPanel } from "../../src/components/GrowthPanel";
+import { growthPoints } from "../../src/lib/growth";
 
 export default function BabyScreen() {
   const { child, children, selectChild } = useApp();
@@ -127,13 +128,14 @@ export default function BabyScreen() {
       )
     : null;
   const tools = stage === "born" ? bornTools : pregnancyTools;
-  const weight = entries.find((e) => e.kind === "growth" && e.unit === "kg");
-  const height = entries.find(
-    (e) =>
-      e.kind === "growth" &&
-      e.unit === "cm" &&
-      e.details?.metric !== "Vòng đầu",
-  );
+  const weightPoint = growthPoints(child, entries, "weight", stage).at(-1);
+  const heightPoint = growthPoints(child, entries, "height", stage).at(-1);
+  const weight = weightPoint
+    ? { ...weightPoint.entry, amount: weightPoint.value }
+    : undefined;
+  const height = heightPoint
+    ? { ...heightPoint.entry, amount: heightPoint.value }
+    : undefined;
   const bmi =
     weight?.amount &&
     height?.amount &&
@@ -277,32 +279,43 @@ export default function BabyScreen() {
           </Text>
           <Ionicons name="chevron-down" color="#8E70CA" size={16} />
         </Pressable>
-        {stage === "born" ? (
+        {
           <Pressable
             accessibilityLabel="Xem chỉ số của bé"
-            onPress={() => router.push("/child/growth")}
+            onPress={() =>
+              router.push({ pathname: "/child/growth", params: { stage } })
+            }
             style={s.measurements}
           >
             {[
               ["height", `${height?.amount ?? "--"} cm`],
-              ["weight", `${weight?.amount ?? "--"} kg`],
-              ["bmi", bmi],
+              [
+                "weight",
+                `${weight?.amount ?? "--"} ${stage === "pregnancy" ? "g" : "kg"}`,
+              ],
+              ["bmi", stage === "pregnancy" ? `${weeks ?? "--"} tuần` : bmi],
             ].map(([id, value]) => (
               <View key={id} style={s.metric}>
                 {id === "bmi" ? (
-                  <Text style={s.metricHeading}>BMI</Text>
+                  <Text style={s.metricHeading}>
+                    {stage === "pregnancy" ? "Tuổi thai" : "BMI"}
+                  </Text>
                 ) : (
-                  <MaterialCommunityIcons
-                    name={id === "height" ? "ruler" : "scale-bathroom"}
-                    color="#303B46"
-                    size={25}
+                  <Image
+                    source={
+                      id === "height"
+                        ? images["ic_height-3x"]
+                        : images["ic_weight-3x"]
+                    }
+                    style={{ width: 25, height: 25 }}
+                    resizeMode="contain"
                   />
                 )}
                 <Text style={s.metricValue}>{value}</Text>
               </View>
             ))}
           </Pressable>
-        ) : null}
+        }
         <View style={s.divider} />
         <Text style={s.intro}>
           Theo dõi sự phát triển của bé bằng những tính năng thú vị!
@@ -362,30 +375,13 @@ export default function BabyScreen() {
             <Text style={s.tileLabel}>Khác</Text>
           </Pressable>
         </View>
-        {stage === "born" ? (
-          <>
-            {[
-              ["Cân nặng", "kg"],
-              ["Chiều dài / chiều cao", "cm"],
-              ["Vòng đầu", "cm"],
-            ].map(([metric, unit]) => (
-              <View key={metric}>
-                <View style={s.divider} />
-                <Pressable
-                  accessibilityLabel={`Chi tiết ${metric}`}
-                  onPress={() => router.push("/child/growth")}
-                  style={s.chart}
-                >
-                  <GrowthChart
-                    entries={entries}
-                    metric={metric!}
-                    unit={unit!}
-                  />
-                </Pressable>
-              </View>
-            ))}
-          </>
-        ) : null}
+        <View style={s.divider} />
+        <GrowthPanel
+          key={`${child?.id}:${stage}`}
+          child={child}
+          entries={entries}
+          stage={stage}
+        />
       </Animated.ScrollView>
       <View
         style={[s.nav, { height: insets.top + 52, paddingTop: insets.top }]}

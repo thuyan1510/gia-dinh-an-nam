@@ -1,0 +1,14 @@
+{
+  "ipaSha256": "8afe889f97b5078cb85fa9744a8962c99bb2f0e55c81f6c68a6bf80fba930d06",
+  "bundleSha256": "c0f473f7d5bf6e1ce305024302646ae1fa7a69cf0f4b700f30ce2db55340965d",
+  "version": "1.2.21",
+  "modules": {
+    "tabs": 1856,
+    "tabLabels": 1857,
+    "threeColumnGrid": 1858,
+    "remoteCategoryIcons": 1860,
+    "growth": 1516
+  },
+  "fetalNote": "Legacy chart manufactures +/-20% around an average. An Nam does not label that as a clinical normal range.",
+  "articleNote": "Handbook categories and article bodies are server supplied, not embedded articles in this IPA."
+}

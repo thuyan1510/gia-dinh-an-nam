@@ -1,46 +1,62 @@
 import { Text, View } from "react-native";
-import Svg, { Circle, Line, Polyline, Text as SvgText } from "react-native-svg";
-import type { CareEntry } from "../types";
-
+import Svg, {
+  Circle,
+  Line,
+  Polygon,
+  Polyline,
+  Text as SvgText,
+} from "react-native-svg";
+import type { CareEntry, Child } from "../types";
+import {
+  growthLabel,
+  growthUnit,
+  growthPoints,
+  growthReferences,
+  type GrowthMetric,
+  type GrowthSex,
+  type GrowthStage,
+} from "../lib/growth";
 export function GrowthChart({
+  child,
   entries,
   metric,
-  unit,
+  stage,
+  sex,
+  domain,
 }: {
+  child: Child | null;
   entries: CareEntry[];
-  metric: string;
-  unit: string;
+  metric: GrowthMetric;
+  stage: GrowthStage;
+  sex: GrowthSex;
+  domain: [number, number];
 }) {
-  const points = entries
-    .filter(
-      (e) =>
-        e.kind === "growth" &&
-        e.amount !== null &&
-        Number.isFinite(e.amount) &&
-        Number.isFinite(Date.parse(e.occurred_at)) &&
-        e.unit === unit &&
-        (e.details?.metric ??
-          (e.unit === "kg" ? "Cân nặng" : "Chiều dài / chiều cao")) === metric,
-    )
-    .slice(0, 12)
-    .reverse();
-  const max = Math.max(1, ...points.map((p) => p.amount ?? 0)) * 1.1;
-  const firstTime = points[0] ? Date.parse(points[0].occurred_at) : 0;
-  const lastTime = points.length
-    ? Date.parse(points[points.length - 1]!.occurred_at)
-    : 0;
-  const coords = points.map((p) => ({
-    x:
-      lastTime === firstTime
-        ? 186
-        : 40 +
-          ((Date.parse(p.occurred_at) - firstTime) / (lastTime - firstTime)) *
-            292,
-    y: 184 - ((p.amount ?? 0) / max) * 156,
-    p,
-  }));
+  const all = growthPoints(child, entries, metric, stage);
+  const points = all.filter((p) => p.age >= domain[0] && p.age <= domain[1]);
+  const refs = growthReferences(stage, metric, sex)
+    .map((s) => ({
+      ...s,
+      points: s.points.filter((p) => p.age >= domain[0] && p.age <= domain[1]),
+    }))
+    .filter((s) => s.points.length);
+  const values = [
+    ...points.map((p) => p.value),
+    ...refs.flatMap((s) =>
+      s.points.flatMap((p) => [p.low ?? p.median, p.high ?? p.median]),
+    ),
+  ];
+  const low = Math.max(
+    0,
+    Math.min(...values, values.length ? Infinity : 0) * 0.9,
+  );
+  const high = Math.max(low + 1, Math.max(...values, 1) * 1.08);
+  const x = (age: number) =>
+    42 + ((age - domain[0]) / (domain[1] - domain[0])) * 292;
+  const y = (value: number) => 195 - ((value - low) / (high - low)) * 165;
+  const title = growthLabel(metric, stage),
+    unit = growthUnit(metric, stage);
   return (
-    <View style={{ gap: 10 }}>
+    <View style={{ gap: 10 }} testID={`growth-${stage}-${metric}`}>
       <Text
         style={{
           fontFamily: "QuicksandSemiBold",
@@ -48,76 +64,142 @@ export function GrowthChart({
           color: "#303B46",
         }}
       >
-        {metric}
+        {title} <Text style={{ fontSize: 13, color: "#86838E" }}>({unit})</Text>
       </Text>
-      {!points.length ? (
-        <View
-          style={{
-            minHeight: 120,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#FAFAFC",
-          }}
-        >
-          <Text style={{ fontFamily: "Quicksand", color: "#92929C" }}>
-            Chưa có số đo {metric.toLowerCase()}
-          </Text>
-        </View>
-      ) : (
-        <Svg
-          width="100%"
-          height={224}
-          viewBox="0 0 350 224"
-          accessibilityLabel={`Biểu đồ ${metric}, ${points.length} số đo gần nhất`}
-        >
-          {[0, 1, 2, 3, 4].map((i) => (
-            <ViewGrid
-              key={i}
-              y={184 - i * 39}
-              label={((max * i) / 4).toFixed(1)}
-            />
-          ))}
-          <SvgText x={4} y={16} fill="#82828E" fontSize={11}>
-            {unit}
-          </SvgText>
-          <Polyline
-            points={coords.map((p) => `${p.x},${p.y}`).join(" ")}
-            stroke="#8E70CA"
-            strokeWidth={2}
-            fill="none"
+      <Svg
+        width="100%"
+        height={232}
+        viewBox="0 0 350 232"
+        accessibilityLabel={`Đồ thị ${title}: ${points.length} số đo, ${refs.length ? "có đường tham chiếu" : "chưa có đường tham chiếu"}`}
+      >
+        {[0, 1, 2, 3, 4].map((i) => (
+          <Line
+            key={`h${i}`}
+            x1={42}
+            x2={334}
+            y1={30 + i * 41.25}
+            y2={30 + i * 41.25}
+            stroke="#EEEAF3"
           />
-          {coords.map(({ x, y, p }) => (
-            <Circle key={p.id} cx={x} cy={y} r={4} fill="#8E70CA" />
-          ))}
-          {coords
-            .filter((_, i) => i === 0 || i === coords.length - 1)
-            .map(({ x, p }, i) => (
-              <SvgText
-                key={p.id}
-                x={x}
-                y={207}
-                textAnchor={i === 0 && coords.length > 1 ? "start" : "end"}
-                fontSize={11}
-                fill="#82828E"
-              >
-                {new Date(p.occurred_at).toLocaleDateString("vi-VN")}
-              </SvgText>
-            ))}
-        </Svg>
+        ))}
+        {[0, 1, 2, 3, 4].map((i) => (
+          <SvgText
+            key={`y${i}`}
+            x={36}
+            y={199 - i * 41.25}
+            textAnchor="end"
+            fontSize={10}
+            fill="#85818C"
+          >
+            {(low + ((high - low) * i) / 4).toFixed(
+              metric === "weight" && stage === "born" ? 1 : 0,
+            )}
+          </SvgText>
+        ))}
+        {refs.map((s, i) => (
+          <ViewReference key={i} points={s.points} x={x} y={y} />
+        ))}
+        {points.length > 1 && (
+          <Polyline
+            points={points.map((p) => `${x(p.age)},${y(p.value)}`).join(" ")}
+            fill="none"
+            stroke="#E677A0"
+            strokeWidth={2.5}
+          />
+        )}
+        {points.map((p) => (
+          <Circle
+            key={p.entry.id}
+            cx={x(p.age)}
+            cy={y(p.value)}
+            r={4}
+            fill="#E677A0"
+            stroke="#fff"
+            strokeWidth={1}
+          />
+        ))}
+        {[0, 1, 2, 3, 4].map((i) => (
+          <SvgText
+            key={`x${i}`}
+            x={42 + i * 73}
+            y={215}
+            textAnchor="middle"
+            fontSize={10}
+            fill="#85818C"
+          >
+            {+(domain[0] + ((domain[1] - domain[0]) * i) / 4).toFixed(1)}
+          </SvgText>
+        ))}
+        <SvgText x={334} y={230} textAnchor="end" fontSize={10} fill="#85818C">
+          {stage === "pregnancy" ? "Tuần thai" : "Tháng tuổi"}
+        </SvgText>
+      </Svg>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
+        <Text style={{ fontSize: 11, color: "#A55277" }}>● Số đo của bé</Text>
+        {refs.length > 0 && (
+          <Text style={{ fontSize: 11, color: "#659A95" }}>
+            {stage === "born"
+              ? "━━ Trung vị WHO · vùng −2 đến +2 SD"
+              : "┄ Mốc tham khảo từ app gốc"}
+          </Text>
+        )}
+      </View>
+      {!points.length && (
+        <Text style={{ fontSize: 12, color: "#817B88" }}>
+          {all.length
+            ? "Không có số đo trong khoảng đang xem."
+            : "Chưa có số đo. Đường tham chiếu không phải số đo của bé."}
+        </Text>
       )}
-      <Text style={{ color: "#8B8E95", fontSize: 12 }}>
-        Số đo thực tế · Chưa đối chiếu đường chuẩn tăng trưởng
-      </Text>
+      {!refs.length && (
+        <Text style={{ fontSize: 12, color: "#817B88" }}>
+          Chưa có bảng tham chiếu cho chỉ số / độ tuổi này.
+        </Text>
+      )}
     </View>
   );
 }
-function ViewGrid({ y, label }: { y: number; label: string }) {
+function ViewReference({
+  points,
+  x,
+  y,
+}: {
+  points: ReturnType<typeof growthReferences>[number]["points"];
+  x: (v: number) => number;
+  y: (v: number) => number;
+}) {
+  const hasBand = points.every((p) => p.low !== null && p.high !== null);
   return (
     <>
-      <Line x1={38} x2={334} y1={y} y2={y} stroke="#E8E8EC" />
-      <SvgText x={32} y={y + 4} textAnchor="end" fontSize={11} fill="#82828E">
-        {label}
-      </SvgText>
+      {hasBand && (
+        <Polygon
+          points={[
+            ...points.map((p) => `${x(p.age)},${y(p.high!)}`),
+            ...points
+              .slice()
+              .reverse()
+              .map((p) => `${x(p.age)},${y(p.low!)}`),
+          ].join(" ")}
+          fill="#ECF5EF"
+        />
+      )}
+      {hasBand &&
+        (["low", "high"] as const).map((k) => (
+          <Polyline
+            key={k}
+            points={points.map((p) => `${x(p.age)},${y(p[k]!)}`).join(" ")}
+            fill="none"
+            stroke="#AACBB6"
+            strokeWidth={1}
+          />
+        ))}
+      <Polyline
+        points={points.map((p) => `${x(p.age)},${y(p.median)}`).join(" ")}
+        fill="none"
+        stroke="#659A95"
+        strokeWidth={1.6}
+        strokeDasharray={hasBand ? undefined : "4 3"}
+      />
     </>
   );
 }

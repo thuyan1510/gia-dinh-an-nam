@@ -1,4 +1,5 @@
 import legacyImages from "./legacyImageSources.json";
+import handbookImages from "./handbookImageSources.json";
 import type { ImageSourcePropType } from "react-native";
 import type { CareKind } from "../types";
 
@@ -260,6 +261,13 @@ assistantTools.push({
   symbol: "heart-pulse",
   route: "/pregnancy",
 });
+assistantTools.push({
+  id: "prenatal-education",
+  title: "Thai giáo",
+  color: "#DAB886",
+  image: handbookImages["18"],
+  route: "/pregnancy/education",
+});
 export const bornTools = assistantTools.slice(0, 17);
 export const pregnancyTools = [
   "pregnancy",
@@ -269,6 +277,7 @@ export const pregnancyTools = [
   "weekly",
   "kick",
   "pregnancy-today",
+  "prenatal-education",
 ].map((id) => assistantTools.find((t) => t.id === id)!);
 export function findAssistantTool(id?: string) {
   return assistantTools.find((t) => t.id === id);

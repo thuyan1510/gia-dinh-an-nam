@@ -1,109 +1,64 @@
-import { useCallback, useState } from "react";
-import { router, useFocusEffect } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
-import { Pressable, ScrollView, Text, View } from "react-native";
-import { Screen, Card, LinkButton } from "../../src/components/ui";
-import { useApp } from "../../src/providers/AppProvider";
-import { formStyles as s } from "../../src/components/forms";
-import { colors } from "../../src/theme";
-
-type Point = {
-  id: string;
-  amount: number;
-  unit: string;
-  occurred_at: string;
-  details: string;
-};
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import { Pressable, Text, View } from "react-native";
+import { Screen } from "../../src/components/ui";
+import { GrowthPanel } from "../../src/components/GrowthPanel";
+import { useCareHistory } from "../../src/lib/useCareHistory";
+import { growthStage } from "../../src/lib/growth";
 export default function GrowthScreen() {
-  const db = useSQLiteContext();
-  const { child } = useApp();
-  const [points, setPoints] = useState<Point[]>([]);
-  const [metric, setMetric] = useState("Cân nặng");
-  const [error, setError] = useState("");
-  useFocusEffect(
-    useCallback(() => {
-      if (child)
-        db.getAllAsync<Point>(
-          "SELECT id,amount,unit,occurred_at,details FROM care_entries WHERE child_id=? AND kind='growth' AND deleted_at IS NULL AND amount IS NOT NULL ORDER BY occurred_at DESC LIMIT 365",
-          child.id,
-        )
-          .then(setPoints)
-          .catch(() => setError("Chưa tải được số đo."));
-    }, [db, child?.id]),
+  const { stage: requested } = useLocalSearchParams<{ stage?: string }>();
+  const { child, entries, error } = useCareHistory();
+  const stage =
+    requested === "pregnancy" || requested === "born"
+      ? requested
+      : growthStage(child);
+  const history = entries.filter((e) =>
+    stage === "pregnancy"
+      ? e.details?.tool === "fetal"
+      : e.kind === "growth" && e.details?.tool !== "fetal",
   );
-  const filtered = points
-    .filter(
-      (p) =>
-        (JSON.parse(p.details).metric ??
-          (p.unit === "kg" ? "Cân nặng" : "Chiều dài / chiều cao")) === metric,
-    )
-    .slice(0, 14)
-    .reverse();
-  const max = Math.max(1, ...filtered.map((p) => p.amount));
   return (
-    <Screen>
-      <Text style={s.title}>Tăng trưởng của {child?.name}</Text>
-      <LinkButton
-        title="Thêm chỉ số cho bé"
-        onPress={() => router.push("/child/measure")}
+    <Screen contentStyle={{ paddingHorizontal: 0, backgroundColor: "#fff" }}>
+      <Stack.Screen options={{ title: "Chỉ số của bé" }} />
+      {!!error && <Text>{error}</Text>}
+      <GrowthPanel
+        key={`${child?.id}:${stage}`}
+        child={child}
+        entries={entries}
+        stage={stage}
       />
-      <View style={s.wrap}>
-        {["Cân nặng", "Chiều dài / chiều cao", "Vòng đầu"].map((m) => (
+      <View style={{ padding: 18, gap: 12 }}>
+        <Text style={{ fontSize: 19, fontFamily: "QuicksandSemiBold" }}>
+          Tất cả số đo
+        </Text>
+        {!history.length && (
+          <Text style={{ color: "#8B8392" }}>Chưa có số đo được lưu.</Text>
+        )}
+        {history.map((e) => (
           <Pressable
-            key={m}
-            style={[s.chip, metric === m && s.activeChip]}
-            onPress={() => setMetric(m)}
+            key={e.id}
+            style={{
+              paddingVertical: 14,
+              borderBottomWidth: 1,
+              borderBottomColor: "#F1ECF5",
+            }}
+            onPress={() =>
+              router.push({
+                pathname: "/record/new",
+                params: { id: e.id, kind: e.kind, tool: e.details?.tool },
+              })
+            }
           >
-            <Text>{m}</Text>
+            <Text style={{ fontFamily: "QuicksandSemiBold" }}>
+              {e.details?.metric ?? (e.unit === "kg" ? "Cân nặng" : "Số đo")} ·{" "}
+              {e.amount} {e.unit}
+            </Text>
+            <Text style={{ color: "#88808C", marginTop: 5 }}>
+              {new Date(e.occurred_at).toLocaleDateString("vi-VN")} ·{" "}
+              {e.created_by_name}　Sửa ›
+            </Text>
           </Pressable>
         ))}
       </View>
-      <Text style={s.hint}>
-        14 số đo gần nhất · Trục cột bắt đầu từ 0. Đây là lịch sử số đo, chưa
-        phải biểu đồ bách phân vị.
-      </Text>
-      {error ? <Text style={s.error}>{error}</Text> : null}
-      <Card>
-        <ScrollView horizontal>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-end",
-              gap: 14,
-              height: 240,
-            }}
-          >
-            {filtered.map((p) => (
-              <View
-                key={p.id}
-                style={{ width: 72, alignItems: "center", gap: 8 }}
-              >
-                <Text style={s.label}>
-                  {p.amount} {p.unit}
-                </Text>
-                <View
-                  accessibilityLabel={`${new Date(p.occurred_at).toLocaleDateString("vi-VN")}: ${p.amount} ${p.unit}`}
-                  style={{
-                    height: Math.max(2, (p.amount / max) * 160),
-                    width: 36,
-                    backgroundColor: colors.sage,
-                    borderRadius: 8,
-                  }}
-                />
-                <Text style={s.hint}>
-                  {new Date(p.occurred_at).toLocaleDateString("vi-VN", {
-                    day: "2-digit",
-                    month: "2-digit",
-                  })}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </ScrollView>
-        {!filtered.length ? (
-          <Text style={s.body}>Bấm “Thêm chỉ số cho bé” để bắt đầu.</Text>
-        ) : null}
-      </Card>
     </Screen>
   );
 }
