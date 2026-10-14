@@ -10,6 +10,7 @@ import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import { AppProvider, useApp } from "../src/providers/AppProvider";
+import { EducationAudioProvider } from "../src/providers/EducationAudioProvider";
 import { migrateDatabase } from "../src/lib/database";
 import { colors } from "../src/theme";
 import { setDiagnosticScreen } from "../src/lib/crashReporting";
@@ -136,98 +137,112 @@ export default function RootLayout() {
   return (
     <SQLiteProvider databaseName="gia-dinh-an-nam.db" onInit={migrateDatabase}>
       <AppProvider>
-        <NotificationNavigation />
-        <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor: colors.primary },
-            headerBackground: () => (
-              <LinearGradient
-                colors={["#7771BC", "#9875CD"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ flex: 1 }}
-              />
-            ),
-            headerShadowVisible: false,
-            headerTintColor: "#fff",
-            headerTitleStyle: { fontFamily: "QuicksandSemiBold", fontSize: 19 },
-            contentStyle: { backgroundColor: colors.background },
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="pregnancy/index"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="notification/open"
-            dangerouslySingular={() => "notification-detail"}
-            options={{ title: "Thông báo" }}
-          />
-          <Stack.Screen
-            name="record/new"
-            options={{ title: "Ghi nhanh", presentation: "modal" }}
-          />
-          <Stack.Screen
-            name="family/message"
-            options={{ title: "Lời nhắc gia đình" }}
-          />
-          <Stack.Screen
-            name="family/connect"
-            options={{ title: "Ghép hai thiết bị", presentation: "modal" }}
-          />
-          <Stack.Screen
-            name="reminder/new"
-            options={{
-              headerShown: false,
-              presentation: "transparentModal",
-              animation: "fade",
-              contentStyle: { backgroundColor: "transparent" },
+        <EducationAudioProvider>
+          <NotificationNavigation />
+          <StatusBar style="dark" />
+          <Stack
+            screenOptions={{
+              headerStyle: { backgroundColor: colors.primary },
+              headerBackground: () => (
+                <LinearGradient
+                  colors={["#7771BC", "#9875CD"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ flex: 1 }}
+                />
+              ),
+              headerShadowVisible: false,
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontFamily: "QuicksandSemiBold",
+                fontSize: 19,
+              },
+              contentStyle: { backgroundColor: colors.background },
             }}
-          />
-          <Stack.Screen
-            name="vaccine/[id]"
-            options={{ title: "Chi tiết lịch tiêm" }}
-          />
-          <Stack.Screen name="easy/[id]" options={{ title: "Lịch E.A.S.Y" }} />
-          <Stack.Screen name="account" options={{ title: "Tài khoản" }} />
-          <Stack.Screen
-            name="family/telegram"
-            options={{ title: "Telegram" }}
-          />
-          <Stack.Screen
-            name="family/attention"
-            options={{ title: "Báo cần hỗ trợ" }}
-          />
-          <Stack.Screen
-            name="widgets"
-            options={{ title: "Tiện ích màn hình" }}
-          />
-          <Stack.Screen name="child/edit" options={{ title: "Hồ sơ bé" }} />
-          <Stack.Screen
-            name="child/measure"
-            options={{ title: "Thêm chỉ số cho bé" }}
-          />
-          <Stack.Screen
-            name="child/vaccinations"
-            options={{ title: "Lịch tiêm phòng" }}
-          />
-          <Stack.Screen name="assistant/[tool]" options={{ title: "Trợ lí" }} />
-          <Stack.Screen
-            name="child/statistics"
-            options={{ title: "Thống kê năm" }}
-          />
-          <Stack.Screen
-            name="child/weeks"
-            options={{ title: "Phát triển theo tuần" }}
-          />
-          <Stack.Screen
-            name="child/growth"
-            options={{ title: "Tăng trưởng" }}
-          />
-          <Stack.Screen name="handbook/[id]" options={{ title: "Cẩm nang" }} />
-        </Stack>
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="pregnancy/index"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="notification/open"
+              dangerouslySingular={() => "notification-detail"}
+              options={{ title: "Thông báo" }}
+            />
+            <Stack.Screen
+              name="record/new"
+              options={{ title: "Ghi nhanh", presentation: "modal" }}
+            />
+            <Stack.Screen
+              name="family/message"
+              options={{ title: "Lời nhắc gia đình" }}
+            />
+            <Stack.Screen
+              name="family/connect"
+              options={{ title: "Ghép hai thiết bị", presentation: "modal" }}
+            />
+            <Stack.Screen
+              name="reminder/new"
+              options={{
+                headerShown: false,
+                presentation: "transparentModal",
+                animation: "fade",
+                contentStyle: { backgroundColor: "transparent" },
+              }}
+            />
+            <Stack.Screen
+              name="vaccine/[id]"
+              options={{ title: "Chi tiết lịch tiêm" }}
+            />
+            <Stack.Screen
+              name="easy/[id]"
+              options={{ title: "Lịch E.A.S.Y" }}
+            />
+            <Stack.Screen name="account" options={{ title: "Tài khoản" }} />
+            <Stack.Screen
+              name="family/telegram"
+              options={{ title: "Telegram" }}
+            />
+            <Stack.Screen
+              name="family/attention"
+              options={{ title: "Báo cần hỗ trợ" }}
+            />
+            <Stack.Screen
+              name="widgets"
+              options={{ title: "Tiện ích màn hình" }}
+            />
+            <Stack.Screen name="child/edit" options={{ title: "Hồ sơ bé" }} />
+            <Stack.Screen
+              name="child/measure"
+              options={{ title: "Thêm chỉ số cho bé" }}
+            />
+            <Stack.Screen
+              name="child/vaccinations"
+              options={{ title: "Lịch tiêm phòng" }}
+            />
+            <Stack.Screen
+              name="assistant/[tool]"
+              options={{ title: "Trợ lí" }}
+            />
+            <Stack.Screen
+              name="child/statistics"
+              options={{ title: "Thống kê năm" }}
+            />
+            <Stack.Screen
+              name="child/weeks"
+              options={{ title: "Phát triển theo tuần" }}
+            />
+            <Stack.Screen
+              name="child/growth"
+              options={{ title: "Tăng trưởng" }}
+            />
+            <Stack.Screen
+              name="handbook/[id]"
+              options={{ title: "Cẩm nang" }}
+            />
+          </Stack>
+        </EducationAudioProvider>
       </AppProvider>
     </SQLiteProvider>
   );

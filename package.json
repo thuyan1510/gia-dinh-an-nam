@@ -1,6 +1,6 @@
 {
   "name": "gia-dinh-an-nam",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "main": "index.js",
   "dependencies": {
     "@bacons/apple-targets": "^5.0.0",

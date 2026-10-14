@@ -145,23 +145,121 @@ test("growth age rejects invalid dates and birth before record; respects local c
   assert.equal(growthAge(fetus, "pregnancy", "2026-10-13T12:00:00"), 20);
   assert.equal(growthAge(null, "born", new Date()), null);
 });
-test("50 distinct Vietnamese poems are complete, sourced and explicitly separate new translations", () => {
+test("40 supplied poems replace the old collection without changing verses or credits", () => {
   const { poems } = require("../src/data/education/poems.ts");
-  assert.equal(poems.length, 50);
-  assert.equal(new Set(poems.map((p) => p.id)).size, 50);
-  assert.equal(new Set(poems.map((p) => p.text)).size, 50);
-  assert.equal(poems.filter((p) => p.translation).length, 40);
+  const collection = require("../src/data/education/poems-collection.json");
+  assert.equal(
+    collection.sourceSha256,
+    "689df20d29cc52df46f63246afc36505c95c0e83b2cdd9a5ac11969db640aded",
+  );
+  assert.equal(poems.length, 40);
+  assert.equal(new Set(poems.map((p) => p.id)).size, 40);
+  assert.equal(new Set(poems.map((p) => p.text)).size, 40);
+  assert.equal(poems[0].title, "TIẾNG MẸ THẦM THÌ");
+  assert.equal(poems[39].title, "ÔNG CHÁU NHÀ VỊT");
   for (const p of poems) {
     assert.ok(p.text.trim().length > 60, p.id);
-    assert.ok(p.text.split("\n").length >= 2);
+    assert.equal(p.text.split("\n").filter(Boolean).length, p.declaredLines);
+    assert.ok(p.lineCount >= 10);
     assert.match(p.source, /^https:\/\//);
-    assert.ok(p.license);
-    if (p.translation) assert.ok(p.original);
+    assert.ok(p.license && p.sourceLabel && p.author);
+    assert.equal(
+      crypto.createHash("sha256").update(p.text).digest("hex"),
+      p.sha256,
+    );
+    assert.match(p.id, /^family-collection-\d{2}$/);
+    assert.ok(!p.translation && !p.original);
   }
-  assert.ok(
-    !poems.some((p) => p.original === "What does the bee do?"),
-    "omit poem describing infant honey consumption",
+  const {
+    parsePoemCollection,
+  } = require("../scripts/parse_poem_collection.cjs");
+  const reconstructed = poems
+    .map(
+      (p, i) =>
+        `BÀI ${String(i + 1).padStart(2, "0")}: ${p.title} (${p.declaredLines} dòng)\nTác giả / Sưu tầm: ${p.author}\n${p.sourceLabel}: ${p.source}\n\n${p.text}\n\n============================================================\n`,
+    )
+    .join("\n");
+  assert.deepEqual(
+    parsePoemCollection(Buffer.from(reconstructed)).poems,
+    poems,
   );
+  assert.throws(() =>
+    parsePoemCollection(
+      Buffer.from(reconstructed.replace("BÀI 02:", "BÀI 04:")),
+    ),
+  );
+});
+test("clock selection round trips all 1440 local minutes, not a UTC date", () => {
+  const {
+    timePickerDate,
+    timePickerValue,
+  } = require("../src/lib/timePicker.ts");
+  const base = new Date(2026, 9, 14, 12);
+  for (let h = 0; h < 24; h++)
+    for (let m = 0; m < 60; m++) {
+      const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      const date = timePickerDate(value, base);
+      assert.equal(timePickerValue(date), value);
+      assert.equal(date.getDate(), 14);
+      assert.equal(date.getSeconds(), 0);
+    }
+  for (const bad of ["", "24:00", "09:60", "9:30", "nonsense"])
+    assert.equal(timePickerValue(timePickerDate(bad, base)), "07:00");
+});
+test("all shared time selectors use native wheels and preserve the requested date/time mode", () => {
+  const read = (p) => fs.readFileSync(path.join(__dirname, "..", p), "utf8");
+  const picker = read("src/components/TimePicker.tsx");
+  assert.match(picker, /<ScheduleWheel[^>]+mode="time"/);
+  assert.doesNotMatch(picker, /ScrollView|33\.333|Array\.from/);
+  const native = read("src/components/ScheduleWheel.native.tsx");
+  assert.match(native, /mode=\{mode\}/);
+  assert.match(native, /display="spinner"/);
+  assert.match(native, /minuteInterval=\{1\}/);
+  for (const file of [
+    "app/record/new.tsx",
+    "app/pregnancy/diary.tsx",
+    "app/pregnancy/notifications.tsx",
+    "app/easy/[id].tsx",
+  ])
+    assert.match(read(file), /<TimePicker/);
+  assert.match(read("src/components/ReminderPopup.tsx"), /<ScheduleWheel/);
+});
+test("background music is enabled in native config and owned outside navigation screens", () => {
+  const app = require("../app.json").expo;
+  assert.ok(app.ios.infoPlist.UIBackgroundModes.includes("audio"));
+  assert.equal(
+    app.plugins.find((p) => Array.isArray(p) && p[0] === "expo-video")[1]
+      .supportsBackgroundPlayback,
+    true,
+  );
+  const read = (p) => fs.readFileSync(path.join(__dirname, "..", p), "utf8");
+  assert.match(read("app/_layout.tsx"), /<EducationAudioProvider>/);
+  const audio = read("src/providers/EducationAudioProvider.tsx");
+  assert.match(audio, /staysActiveInBackground = true/);
+  assert.match(audio, /showNowPlayingNotification = true/);
+  assert.doesNotMatch(
+    read("src/components/EducationPlayer.tsx"),
+    /useVideoPlayer|useFocusEffect|AppState/,
+  );
+  assert.doesNotMatch(
+    read("app/pregnancy/education.tsx"),
+    /useFocusEffect|setTrackId\(null\)/,
+  );
+});
+test("music source handles native asset IDs and both web asset shapes with metadata", () => {
+  const { educationMusicSource } = require("../src/lib/educationMusic.ts");
+  const metadata = { title: "Ánh trăng", artist: "Claude Debussy" };
+  assert.deepEqual(educationMusicSource(42, metadata.title, metadata.artist), {
+    assetId: 42,
+    metadata,
+  });
+  for (const value of ["/assets/test.m4a", { uri: "/assets/test.m4a" }])
+    assert.deepEqual(
+      educationMusicSource(value, metadata.title, metadata.artist),
+      { uri: "/assets/test.m4a", metadata },
+    );
+  for (const value of [null, undefined, {}, "", NaN])
+    assert.throws(() => educationMusicSource(value, "", ""));
 });
 test("ten bundled recordings have checked bytes, source and recording-specific licenses", () => {
   const music = require("../src/data/education/music.json");

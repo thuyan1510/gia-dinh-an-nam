@@ -10,7 +10,7 @@ module.exports = {
   ...base,
   ios: {
     ...base.ios,
-    infoPlist: { ...base.ios.infoPlist, UIBackgroundModes: [] },
+    infoPlist: { ...base.ios.infoPlist },
     entitlements: {
       "com.apple.security.application-groups": ["group.vn.giadinhanam.family"],
     },

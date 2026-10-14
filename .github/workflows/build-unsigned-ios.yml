@@ -101,6 +101,8 @@ jobs:
           import plistlib, sys
           with open(sys.argv[1], 'rb') as stream:
               info = plistlib.load(stream)
+          if 'audio' not in info.get('UIBackgroundModes', []):
+              raise SystemExit('Missing audio background mode for prenatal music')
           schemes = {scheme for item in info.get('CFBundleURLTypes', []) for scheme in item.get('CFBundleURLSchemes', [])}
           missing = {'giadinhannam', 'giadinhanam'} - schemes
           if missing:

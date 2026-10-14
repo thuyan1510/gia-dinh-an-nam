@@ -54,12 +54,7 @@ export default function PoemScreen() {
           </Text>
           <View style={s.source}>
             <Text style={s.author}>{poem.license}</Text>
-            {poem.translation && (
-              <Text style={s.author}>
-                {poem.translation}
-                {"\n"}Nguyên tác: {poem.original}
-              </Text>
-            )}
+            <Text style={s.author}>{poem.sourceLabel}</Text>
             <Pressable
               onPress={() =>
                 void Linking.openURL(poem.source).catch(() =>

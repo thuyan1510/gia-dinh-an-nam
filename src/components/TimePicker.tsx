@@ -3,11 +3,12 @@ import {
   Keyboard,
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { ScheduleWheel } from "./ScheduleWheel";
+import { timePickerDate, timePickerValue } from "../lib/timePicker";
 
 /** Selection only: no keyboard, no locale-dependent parsing, all 60 minutes available. */
 export function TimePicker({
@@ -20,7 +21,8 @@ export function TimePicker({
   label?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState("07:00");
+  const [draft, setDraft] = useState(() => timePickerDate("07:00"));
+  const selectedTime = timePickerValue(draft);
   return (
     <>
       <Pressable
@@ -29,7 +31,7 @@ export function TimePicker({
         style={s.input}
         onPress={() => {
           Keyboard.dismiss();
-          setDraft(/^([01]\d|2[0-3]):[0-5]\d$/.test(value) ? value : "07:00");
+          setDraft(timePickerDate(value));
           setOpen(true);
         }}
       >
@@ -44,44 +46,9 @@ export function TimePicker({
         <View style={s.overlay}>
           <View style={s.panel}>
             <Text style={s.title}>
-              {label} · {draft}
+              {label} · {selectedTime}
             </Text>
-            <View style={s.columns}>
-              {[24, 60].map((count, column) => (
-                <View key={count} style={{ flex: 1 }}>
-                  <Text style={s.title}>{column === 0 ? "Giờ" : "Phút"}</Text>
-                  <ScrollView
-                    style={{ maxHeight: 240 }}
-                    contentContainerStyle={s.grid}
-                  >
-                    {Array.from({ length: count }, (_, i) =>
-                      String(i).padStart(2, "0"),
-                    ).map((n) => (
-                      <Pressable
-                        key={n}
-                        accessibilityLabel={`${column === 0 ? "Giờ" : "Phút"} ${n}`}
-                        accessibilityState={{
-                          selected: draft.split(":")[column] === n,
-                        }}
-                        style={[
-                          s.cell,
-                          draft.split(":")[column] === n && s.selected,
-                        ]}
-                        onPress={() =>
-                          setDraft(
-                            column === 0
-                              ? `${n}:${draft.slice(3)}`
-                              : `${draft.slice(0, 2)}:${n}`,
-                          )
-                        }
-                      >
-                        <Text style={s.text}>{n}</Text>
-                      </Pressable>
-                    ))}
-                  </ScrollView>
-                </View>
-              ))}
-            </View>
+            <ScheduleWheel value={draft} onChange={setDraft} mode="time" />
             <View style={s.columns}>
               <Pressable style={s.action} onPress={() => setOpen(false)}>
                 <Text style={s.text}>Hủy</Text>
@@ -89,11 +56,11 @@ export function TimePicker({
               <Pressable
                 style={[s.action, s.selected]}
                 onPress={() => {
-                  onChange(draft);
+                  onChange(selectedTime);
                   setOpen(false);
                 }}
               >
-                <Text style={s.text}>Chọn {draft}</Text>
+                <Text style={s.text}>Chọn {selectedTime}</Text>
               </Pressable>
             </View>
           </View>
@@ -135,14 +102,6 @@ const s = StyleSheet.create({
     backgroundColor: "#fff",
   },
   columns: { flexDirection: "row", gap: 12 },
-  grid: { flexDirection: "row", flexWrap: "wrap" },
-  cell: {
-    width: "33.333%",
-    minHeight: 44,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 8,
-  },
   selected: { backgroundColor: "#E9E2F5" },
   action: {
     flex: 1,

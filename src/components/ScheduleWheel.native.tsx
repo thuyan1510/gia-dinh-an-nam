@@ -1,5 +1,4 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Platform } from "react-native";
 
 export function ScheduleWheel({
   value,
@@ -13,12 +12,13 @@ export function ScheduleWheel({
   return (
     <DateTimePicker
       value={value}
-      mode={Platform.OS === "ios" ? "datetime" : mode}
+      mode={mode}
       display="spinner"
       locale="vi-VN"
       is24Hour
+      minuteInterval={1}
       themeVariant="light"
-      style={{ height: 170, width: "100%" }}
+      style={{ height: 216, width: "100%" }}
       onChange={(_event, date) => {
         if (date) onChange(date);
       }}

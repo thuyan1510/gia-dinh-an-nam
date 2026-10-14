@@ -8,8 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { router, Stack, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
+import { router, Stack } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { Screen } from "../../src/components/ui";
@@ -21,6 +20,7 @@ import {
 import { poems, poemCategories } from "../../src/data/education/poems";
 import tracks from "../../src/data/education/music.json";
 import icons from "../../src/data/handbookImageSources.json";
+import { useEducationAudio } from "../../src/providers/EducationAudioProvider";
 const FAVORITES = "education-poems-v1";
 export default function EducationScreen() {
   const [tab, setTab] = useState<"poems" | "music">("poems");
@@ -29,7 +29,8 @@ export default function EducationScreen() {
     [onlySaved, setOnlySaved] = useState(false);
   const [saved, setSaved] = useState<string[]>([]),
     [ready, setReady] = useState(false);
-  const [trackId, setTrackId] = useState<string | null>(null);
+  const { track, start } = useEducationAudio();
+  const trackId = track?.id;
   useEffect(() => {
     let alive = true;
     void AsyncStorage.getItem(FAVORITES)
@@ -50,8 +51,6 @@ export default function EducationScreen() {
       alive = false;
     };
   }, []);
-  // Unmount the sole audio player when this screen loses focus. No hidden sound.
-  useFocusEffect(useCallback(() => () => setTrackId(null), []));
   const favorite = async (id: string) => {
     const next = saved.includes(id)
       ? saved.filter((v) => v !== id)
@@ -78,7 +77,6 @@ export default function EducationScreen() {
       (!onlySaved || saved.includes(p.id)) &&
       normalize(p.title + " " + p.text).includes(normalize(query.trim())),
   );
-  const track = tracks.find((t) => t.id === trackId);
   return (
     <Screen contentStyle={s.screen}>
       <Stack.Screen
@@ -116,7 +114,6 @@ export default function EducationScreen() {
             accessibilityState={{ selected: tab === t.id }}
             onPress={() => {
               setTab(t.id);
-              if (t.id === "poems") setTrackId(null);
             }}
             style={[s.tab, tab === t.id && s.activeTab]}
           >
@@ -131,6 +128,7 @@ export default function EducationScreen() {
           </Pressable>
         ))}
       </View>
+      {track && <EducationPlayer key={track.id} />}
       {tab === "poems" ? (
         <>
           <View style={s.search}>
@@ -219,7 +217,7 @@ export default function EducationScreen() {
                     {p.text.split("\n")[0]}
                   </Text>
                   <Text style={s.category}>
-                    {p.category} · {p.translation ? "Thơ dịch" : "Ca dao"}
+                    {p.category} · {p.author}
                   </Text>
                 </View>
               </Pressable>
@@ -243,9 +241,8 @@ export default function EducationScreen() {
             </Text>
           )}
           <Text style={s.note}>
-            10 bài ca dao Việt Nam và 40 bài thơ ngắn của Christina Rossetti,
-            dịch mới sang tiếng Việt. Tuyển chọn để đọc cùng con, không phải
-            bảng xếp hạng y khoa.
+            40 bài thơ từ tuyển tập của gia đình. Nội dung, tác giả và nguồn
+            được giữ theo tệp gốc, có thể đọc khi không có mạng.
           </Text>
         </>
       ) : (
@@ -254,18 +251,11 @@ export default function EducationScreen() {
             <Text style={s.sectionTitle}>Giai điệu cho phút bình yên</Text>
             <Text style={s.small}>10 bản nhạc · đã tải sẵn trong app</Text>
           </View>
-          {track && (
-            <EducationPlayer
-              key={track.id}
-              track={track}
-              onClose={() => setTrackId(null)}
-            />
-          )}
           {tracks.map((t, i) => (
             <Pressable
               key={t.id}
               accessibilityLabel={`Nghe ${t.title}`}
-              onPress={() => setTrackId(t.id)}
+              onPress={() => start(t.id)}
               style={[
                 s.music,
                 trackId === t.id && { backgroundColor: "#EFF6EE" },

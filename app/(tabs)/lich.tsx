@@ -178,7 +178,7 @@ export default function ReferenceScreen() {
             ? "Chưa có bài được đánh dấu. Mở một bài và nhấn Lưu."
             : search.trim()
               ? "Không tìm thấy bài phù hợp."
-              : "Chuyên mục này chưa có bài tải sẵn. Bạn có thể chọn nhóm khác hoặc tìm trong toàn bộ cẩm nang."}
+              : "An Nam chưa có bản bài viết ngoại tuyến cho chuyên mục này. App gốc tải bài từ máy chủ, không lưu sẵn trong IPA; đây không có nghĩa là chuyên mục gốc không có bài."}
         </Text>
       )}
       {items.map((a) => (

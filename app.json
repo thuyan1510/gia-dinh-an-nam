@@ -3,7 +3,7 @@
     "name": "Gia Đình An Nam",
     "slug": "gia-dinh-an-nam",
     "scheme": ["giadinhannam", "giadinhanam"],
-    "version": "0.10.0",
+    "version": "0.10.1",
     "orientation": "portrait",
     "icon": "./assets/an-nam-icon-v1.png",
     "userInterfaceStyle": "automatic",
@@ -11,9 +11,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "vn.giadinhanam.family",
-      "buildNumber": "12",
+      "buildNumber": "13",
       "infoPlist": {
-        "UIBackgroundModes": []
+        "UIBackgroundModes": ["audio"]
       }
     },
     "android": {
@@ -45,6 +45,13 @@
         }
       ],
       "expo-font",
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": false
+        }
+      ],
       [
         "expo-splash-screen",
         {
